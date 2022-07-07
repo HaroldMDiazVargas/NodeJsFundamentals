@@ -1,0 +1,32 @@
+Node Architecture 
+    ¿What's a runtime environment really?
+     Before Node we used JS only to build apps that run inside of a browser. Every browser has a JS EGINE that
+     takes our JS code and converts to Machine Code.
+     - Microsoft Edge uses Chakra
+     - Firefox uses SpiderMonkey
+     - Chrome uses v8
+     This is why one JS code can behave different in one browser to another. 
+
+     A browser provides a runtime environment for JS code:
+      - In browsers we have the window/document object: These objects allow us to work with the enviroment 
+        in which our code is running.
+     
+     Up-to 2009 the only way to write JS code was inside of the browsers. 
+     In 2009 Ryan Dahl created Node came with a brillian idea: Would be great execute JS code outside of the 
+     browser:
+      - Took Google v8 Engine which is the fastest JS Engine out and embeded inside a C++ program an called it 
+        Node.exe
+    
+     So similar to a browser, Node is a runtime environment for JS code, it contains:
+      - JS Engine that executes JS code
+      - Also has certain objects that provide an environment for our JS code, these objects are different 
+        from the enviroment objects we have in browsers.
+        e.g We dont have in Node document object, but instead we have fs(fileSystem), http(for listen a request)
+            things that we cant do inside of a browser
+        So these additional modules/objects give us capabilities not available inside browsers. 
+    
+    Node is NOT a programming language, dont compare with C#, Ruby, so on.
+    Node is NOT a framework, dont compare with ASP.NET, Rails, Django.
+    Node is a RUNTIME ENVIRONMENT for executing JavaScript code.
+    
+    
