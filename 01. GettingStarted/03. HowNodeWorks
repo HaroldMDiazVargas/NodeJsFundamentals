@@ -1,0 +1,39 @@
+How Node Works
+    We saw that Node apps are Highly-scalable, this is because:
+    - Non-blocking or ASYNCHRONOUS nature of Node: 
+      - Single Thread used to handle multiple Requests at the same time, so the single thread can be used 
+        to handle more than 1 request and when the result(query of database) is ready, the thread comes back 
+        to that request and finalize it!
+    
+    - In contrast, we have Blocking or SYNCHRONOUS architecture used by ASP.NET or Rails:
+      - A thread handle a Request from the server during all the time that the database query result is ready,
+        so when this happen if another Request appears => so we need a new thread. So if we have a very 
+        concurrent clients making Requests to the server => We will get All threads busy!
+        New clients(requests) have to wait until a thread is available, and if we dont' want to wait we need 
+        to add more hardware.
+        So we are not utilizing our resources EFFICIENTLY. This is the problem with Blocking architecture.
+    
+
+    So Node apps are asynchronous by default:
+     - In Node we have a Single Thread to handle all requests.
+     - The thread doesn't have to wait the database to return the data, while the database is executing 
+       our query => the thread will be use to serve another client. 
+     - When database prepares the result, it puts a message in Event Queue
+     - Node is continusly monitoring this Event Queue in the background
+
+    This kind of app makes Node ideal for:
+     - making apps that include a lot of Disk or Network access(I/O--intensive apps), we can 
+       serve more clients with the need throwing more hardware. That's why Node apps are highly-scalable, used 
+       for real-time and data-intensive apps.
+       
+    But is not ideal for:
+     - CPU-intensive apps e.g video encoding, image manipulation service. In this kind of app we have a lot 
+       of calculation we should be done by CPU and few operations that touch the file system or the network.
+       Because when performing calculations to serve 1 client => Other clients have to WAIT.
+
+
+     
+
+
+
+
