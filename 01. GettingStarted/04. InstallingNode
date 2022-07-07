@@ -1,0 +1,7 @@
+Installing Node
+- Check if we have node in the current machine:
+    node --version
+
+head over => nodejs.org
+    - LTS(latest stable version) => Install
+    - Current(Newer experimental)
