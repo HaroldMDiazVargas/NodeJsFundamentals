@@ -1,0 +1,41 @@
+What is Nodejs
+    Nodejs is an open source and cross platform RUNTIME ENVIRONMENT for executing JavaScript code outside
+    of the browser.
+    We often use Node to build:
+     - back-end services => APIs(Application Programming Interfaces)
+       these are the services that power our client app
+       e.g Web App running inside of a web browser
+           Mobile App running on a mobile device
+           These client apps are simply what the users see and interacts with. These are the surface, they need 
+           to talk to some services sitting on the SERVER or in the CLOUD to:
+           - store data 
+           - send emails
+           - push notifications
+           - kick up workflows
+           - so on
+     - Node is ideally for building apps:
+        - Highly-scalable
+        - data-intensive
+        - real-time backend services 
+        that power our client apps
+    
+    There're others tools and frameworks for building backend services such as:
+     - ASP.NET
+     - Rails or Ruby on Rails
+     - Django
+     
+    But Node:
+     - Easy to get started
+     - Can be used for protoyping and agile development
+     - Can be used for building superfast and highly scalable servoices
+       e.g used in production for large companies such as paypal, uber, netflix, walmart, so on
+     - In Node apps we use JavaScript, so we can reuse our JS skills and transiction into a full-stack
+       developer.
+     - We use our JS in the frontend and backend, so our source code will be cleaner and more consistent
+       the same naming conventions, same tools and same practices
+     - It has the largest ecosystem of open-source libraries available to us. For pretty much features we 
+       want to add in our apps, there're some free open-source libraries that we can use, we dont have to 
+       build these building blocks for scratch and focus in the core of our app.
+
+
+
