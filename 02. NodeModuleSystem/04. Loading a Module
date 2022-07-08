@@ -1,0 +1,63 @@
+Loading a Module
+    We use the require() function to load a module. This is one of the functions in Node, we dont have it in browsers
+    this function takes:
+     - 1 argument => name or path of the target module we want to load
+                     e.g './moduleName.js' or just '.moduleName'
+                          Node assumes that this is a JavaScript file, automalically adds .js extension
+    this function returns:
+     - the object that is exported from the target module => exports: {} (this object is returned)
+       
+       We will have an object with multiple keys if in the module we have:
+        - exports.name = function1;
+          exports.name = function2      => if we need to export multiple functions 
+
+          in this object we will have key:par values where:
+          -key: represent the name of exported function/variable  e.g log:
+          -value: is the function/variable itself                 e.g [Function: log]   
+        
+          and if we want to use in our app.js, we use:
+          - .key1() , .key2() => so we need to define a constant and then use period(.) to access to the methods(keys)
+
+        We will have not actually an object in exports, if we define in the module:
+        - exports = function;           => if we just want to export a single function, we set exports to the function
+        So exports is not longer an object with different key:value pairs, we just in our app.js use:
+        - constantName() => we dont need to add period(.), because the constant itself is the function
+
+      
+
+
+    In the recent versions of JavaScript we have the ability to define constants, so as a best practice when define a 
+    module using the require(), is better to store the result in a constant:
+        e.g const logger = require()
+    Because:
+     - When we don't use a constant, we can override the value and then when we call the method we get an exception
+       but only when we execute it.
+     - When we use a constant, there're tools that check JavaScript code to prevent happen in the runtime.
+       One tool of these is JSHint:
+       jshint app.js  => we can scan all JavaScript code for errors like that at the compile time
+    
+    
+
+
+
+-- app.js
+
+const logger = require('./logger');       => in logger.js we used => module.exports.log = log;
+
+logger.log('message');
+
+
+-- app.js
+
+const log = require('./logger');            => in logger.js we used => module.exports = log;
+log('message')
+
+-- We will see in both cases:
+message
+
+
+
+
+-- Terminal:
+- node app.js
+- jshint app.js
