@@ -1,0 +1,38 @@
+Module Wrapper Function
+    We know that the variables/functions we define in a module are scope to that module(private).
+    ¿How Node does this?
+    To see this, let's add a syntax error in the 1st line of app.js:
+    1 var x=;   
+    2
+    3
+    ...
+    if we run this, we get an Error and we can see  function declaration:
+    
+    function (exports, require, module, __filename, __dirname){  var x=; ...}   => Module Wrapper Function
+
+    So basically Node doesn't execute this code directly:
+     - Node always wraps the code inside the previous function
+    
+    If we see the arguments of the function:
+     - require() => we see it to loading a module
+     - module object 
+     - exports => is a shortcut to exactly => module.exports
+       we can do:
+        - module.exports.nameExpFunc = function;
+        - module.exports = function;
+        - exports.nameExpFunc = function;
+       we can't do:
+        - exports = function;  => because exports is a reference to module.exports (we can't change the reference)
+     - __filename => represent the name of the current file
+                     e.g /Users/harold/Desktop/file.js
+     - __dirname => represent the path of the current file
+                     e.g /Users/harold/Desktop
+
+     These appear to be Global but is not global, is local to each module!
+
+
+
+
+    
+
+
