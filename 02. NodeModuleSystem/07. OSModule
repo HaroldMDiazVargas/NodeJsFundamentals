@@ -1,0 +1,39 @@
+OS Module
+    Get information about the current Operating System.
+    In Documentation, we will see the methods available:  https://nodejs.org/dist/latest-v16.x/docs/api/os.html
+     - os.freemem(): returns the amount of free memory on this machine
+     - os.totalmem(): total memory we can get information about the current user
+     - os.uptime(): returns the system uptime in number of seconds
+     - ...
+    
+    Load OS Module:
+        const os = require('os');
+
+    One feature in ES6 is Template String, we can use this in Node instead of concatenate strings using '+'.
+
+
+    Notes:
+        Different browsers implement different settings of the feautes of ES6 /ES2015: ECMAScript6. But the 
+        v8 we have inside of node is pretty UP-to-Date and implements a lot of new features of JavaScript defined
+        in ES6. 
+
+        Before Node existence, we couldn't see this kind of infor about OS system, because JavaScript only runned inside 
+        browsers, and we only worked with window or document objects. Now we can run JavaScript code outside of browser(on the server)
+        
+
+
+
+
+-- app.js
+
+const os = require('os');
+
+var totalMemory = os.totalmem();
+var freeMemory = os.freemem();
+
+console.log(`Total Memory: ${totalMemory} `);
+console.log(`Free Memory: ${freeMemory} `);
+
+-- output:
+Total Memory: 391872819
+Free Memory: 102109212
