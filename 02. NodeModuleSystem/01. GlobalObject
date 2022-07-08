@@ -1,0 +1,34 @@
+Global Object
+    
+    console object is a Global Object, is part of the Global Scope. This means we can access it from anywhere,
+    and any files. We have also another bunch of objects and functions that are also globally available in Node:
+    - setTimeout() => Use to call a function after a delay
+    - clearTimeout()
+    - setInterval() => Use to repetitively call a function after a given delay
+    - clearInterval() => Use to stop that function to being called repetitively
+    These are the Global Objects available in regular JavaScript(even in Node or Browser)
+    
+    In Node we have a couple of other Global Objects(see later)
+
+    In Browsers we have:
+     - window => Object that represents our Global Scope. So all the variables and functions defined
+                  globally, we can access them by at this window object.
+                   e.g window.console.log()
+                       console.log() => JavaScript Engine prefix this statement with => window.
+                    e.g var message = '';
+                        window.message => the variable is available by at the window object
+    
+    But in Node we dont have window object:
+     - global => Instead of window object, we have global object. All previuos functions are available 
+                 by the global object.
+                  e.g global.console.log()
+                      global.setTimeout()
+
+                 But the variables or functions that we define here(in the file .js) are not added to the global 
+                 object. They are only scope to this file, not available outside this file.
+                  e.g var message = '';
+                      console.log(global.message); => We will see undefined in the console
+
+                 This is because Node Module System!
+    
+
