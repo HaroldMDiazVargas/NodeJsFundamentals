@@ -1,0 +1,27 @@
+First Node App
+   
+   Steps:
+    - We create a new folder with the name of the app => first-app
+    - We create a new file 'app.js', in this file we can write regular javascript.
+      e.g function sayHello(name){
+        console.log('Hello ' + name);
+      }
+      sayHello('Harold');
+    
+    - In terminal we run:
+        node app.js
+
+        This app.js that we're gonna pass to Node => Node is gonna give it to v8 for execution.
+
+
+
+    If we have a file with:
+        console.log(window);
+     and then run with node => we get an exeption (window is not define)
+     - Because in Node we dont have the 'window' or 'document' objects, these are part of the runtime environmnet
+       that we get with browsers.
+       We have other objects to work with:
+        - files 
+        - operating system
+        - network
+        - so on. 
