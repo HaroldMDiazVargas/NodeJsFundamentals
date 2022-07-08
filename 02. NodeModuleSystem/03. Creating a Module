@@ -1,0 +1,39 @@
+Creating a Module
+    Just add new file to the first-app folder:
+    - logger.js
+      - Let's imagine to create a module for logging messages, and the idea is to reuse this module in various 
+        part of this app and even potentially in other apps. 
+      - Let's imagine to use in this module one of those remote logging services for logging our messages
+        there're websites that provide logging as a service:
+        - they give us a URL
+        - we send a http request to that URL to log messages in the cloud
+    
+      - code:
+        - Declare a variable url = 'http:/mylogger.io/log'. We're going to send an http request to this endpoint.
+        - Declare a function log takes a message. In this function we send an http request
+      
+      - The variable url and the function log are scope to this module, they're private. But in app.js we want 
+        to use the log function. We need to make this function PUBLIC. In the module object for each file
+        we have a property:
+        - exports:{} => anything that we add to this empty object will be exported and available outside.
+
+      - export:
+        - module.exports.nameExported = variable/function;
+        Notes: 
+            We can have a custom name to outside(export) and assign it the variable or function.
+            We need to export only a subset of each  module and never exports implementation detail, 
+            keep the module easy to use!
+            
+
+
+-- logger.js
+var url = 'http://mylogger.io/log';
+
+function log(message){
+    // Send an HTPP request
+    console.log(message);
+}
+
+module.exports.log = log;
+module.exports.endPoints = url;      => this is implementation detail, never export
+
