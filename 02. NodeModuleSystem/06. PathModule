@@ -1,0 +1,53 @@
+Built-in modules very useful in Node:
+ - Head over nodejs.org
+   - Docs(leftside)
+     - vX.X.X LTS
+      - Table of Contents 
+        - Almost all of this list is a built-in module
+          - File System: To work with files
+          - HTTP: create web servers that listen for HTTP Requests
+          - OS:   work with the Operating System
+          - Path: Gives us bunch of utility functions for working with paths
+          - Process: Gives us information about the current process
+          - Query Strings: Useful in building HTTP Services
+          - Stream: Allow us to work with Streams of Data
+          - Others modules...
+
+
+Path Module
+On Documentation we can see all the functions define in this module:
+https://nodejs.org/dist/latest-v16.x/docs/api/path.html
+
+To use this module:
+    const path = require('path');
+
+path is an object stored in a constant.
+
+The argument we pass to the require function:
+ - Node assumes that this a built-in module.
+ - If isn't built-in module:
+   - Then Node look for existing of relative path to a file in this app
+
+Methods of path:
+ - There're various useful methods, one we use is parse()
+
+
+So if we want to work with paths is easier to use this module instead of working with pure strings!
+
+
+-- app.js
+
+const path = require('path');
+
+var pathObj = path.parse(__filename);
+
+console.log(pathObj);
+
+
+-- we will see the path object and its properties:
+{ root: '/',
+  dir: '/Users/...',
+  base: 'app.js',
+  ext: '.js',
+  name: 'app'
+}
