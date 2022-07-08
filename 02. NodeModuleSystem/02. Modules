@@ -1,0 +1,54 @@
+Modules
+    In client-side JavaScript (run inside browsers), when we declare a variable or a function, that is added
+    to the Global Scope(window object).
+    There's a problem with this behaviour with the Global Scope:
+     - In a real world app, we often split our JavaScript code into multiple files; so is possible that in both 
+       files we define the same function(exact same name function), so the new definition(newest) will 
+       override the previous definition.
+    In order build:
+     - reliable (safe)
+     - maintainable apps
+    We should avoid define:
+     - variables and functions in the Global Scope
+     Instead we need => MODULARITY
+
+    
+    Modularity
+    We need to create small building blocks or modules where we define our variables and functions:
+     - Two variables or Two functions with the same name don't override another one defined somewhere else
+       encapsulated inside that module.
+    
+    At the core of Node, we have a concept called:
+     -MODULE: Every file in a Node app is considered a module, the variables and functions defined in that 
+              file/module are scope to that file. In OOP we say they're private. 
+              We need to explicitly export the variable or function if we want to use it outside of that module
+    
+    Every Node app has at least 1 Module/file we call Main Module,  to show this module:
+        -- In app.js 
+           console.log(module);
+        
+        This module object appears to be Global:
+         - we may think we can access it from the global object => global.module
+         - but actually this is not a global object. Appears to be global but is not global(see later)
+
+        -- Run => node app.js
+         - We will see:
+           - We have an object called Module{}
+             - id: '.'              => every Module has an id or unique identifier
+             - exports: {}
+             - parent: null
+             - filename: './.'      => complete path of the file
+             - loaded: false        => boolean, determinated this module is loaded or not
+             - children: []
+             - paths: [...,...,..]
+    
+-- app.js
+console.log(module);
+
+-- terminal 
+node app.js
+
+
+
+       
+        
