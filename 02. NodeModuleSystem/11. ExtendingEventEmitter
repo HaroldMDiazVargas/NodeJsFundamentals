@@ -1,0 +1,113 @@
+Extending Event Emitter
+    In the real world is quite weird that we're going to work with the EventEmitter object directly. Instead:
+    - we want to create a class that has all the capabilites of the EventEmitter and then we use that class in our code
+    
+
+    Algorithm:
+     - In logger.js module we want to raise an Event after log the message in the log() function
+     - Later in app.js module we want to listen for that Event and do something.
+
+    Code:
+     - We need to Load Events Module and also create a new instance => all this in the logger.js module
+     - We need to raise the event in the logger.js module, because 'emit an event' shouldn't be in app.js module
+       is the logger.js module that emits/signals/produces an event saying 'The message is logged'
+     - We load the logger.js module in the app.js module an call the log() function to see what happen
+    
+    Test:
+     - In the console we only get the 'message', the eventlistener in the app.js module was not called.
+       Reason:
+       - We're working with two differente EventEmitter objects:
+         - In app.js we have one EventEmitter object
+         - In logger.js we have another EventEmitter object
+
+
+    -- logger.js
+    const EventEmitter = require('events');
+    const emitter = new EventEmitter();
+
+    function log(message){
+        // Send an HTPP request
+        console.log(message);
+
+        emitter.emit('messageLogged', {id: 1, url: 'http://'} );
+    }
+
+    module.exports = log;
+
+
+
+    --app.js
+    const EventEmitter = require('events');
+    const emitter = new EventEmitter();
+
+    emitter.on('messageLogged', function(arg){
+        console.log('Listener called', arg); 
+    });
+
+    const log = require('./logger');
+    log('message');
+
+
+
+    --Output:
+    message
+
+        
+    
+    Defining class:
+     - We create a class called Logger. In ES6 we have keyword(Syntactical sugar for creating a class)
+       and we export the Logger class
+    
+    We have this Logger class to have all capabilites of the EventEmitter:
+     - We use the 'extends' keyword that comes with ES6 => Class nameClass extends parentClass{}
+       with this change Logger class will have all the functionalities defined in EventEmitter
+
+    Code:
+     - We create the Logger class and inside wr put the function log() but we drop 'function' keyword because it's inside 
+       a class => this is takes like a method o f the class
+     - we use 'this' keyword to refer to the object of this class, and like we use 'extends' keyword to take all the 
+       capabilities of baseParent class EventEmitter, so we can call the this.emit() method
+     - In logger.js module we export a class instead of a function
+     - Finally in app.js we take this class, then create an instance and register a listener for the corresponding 
+       event. And lastly we call the method .log() 
+     
+    Test:
+     - We can see that the method .log() is executed and also the listener/callback function when the event is emitted.
+    
+
+
+    --logger.js
+    const EventEmitter = require('events');
+
+    class Logger extends EventEmitter{
+        
+        log(message){
+            // Send an HTPP request
+            console.log(message);
+
+            this.emit('messageLogged', {id: 1, url: 'http://'} );
+        }
+
+    }
+
+    module.exports = Logger;
+
+
+
+    --app.js
+    const EventEmitter = require('events');
+
+    const Logger = require('./logger');
+    const logger = new Logger();
+    
+    logger.on('messageLogged', function(arg){
+        console.log('Listener called', arg); 
+    });
+
+    logger.log('message');
+
+    
+
+    --Output:
+    message
+    Listener called {id: 1, url: 'http://'}
