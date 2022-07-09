@@ -1,0 +1,56 @@
+Updating Local Packages
+    As we build our app, there may be newer versions of the dependecies we've installed. 
+
+    See what packages are outdated:
+     - We run => npm outdated
+                 - This show only if the dependecies directly depended upon by the current project
+                   have updates of new versions!
+                 - If there are not new versions, we may see nothing in the terminal
+
+     - We run => npm outdated --all
+                 - To see all the dependecies even those that are not directly upon by the current project
+    
+    Understanding the versions:
+     - Current: The current version (what we have in package.json) in our Node app
+     - Wanted: This version represent a released version that match the corresponding Semantic Versioning(Tilde, Caret)
+               and fits to this as the possible version updated(Different Minor or Patch version)
+     - Latest: This is the latest version released of the Package, can be different Major, Minor and Patch version
+
+
+    Updating packages:
+     - We run => npm update
+                 But this only work for updating Minor and Patch releases. This is good because we dont want 
+                 any break changes in our app!
+    
+    Updating to Latest Version:
+     - We run => npm i -g npm-check-updates     => we install this package
+     - Then we run => npm-check-updates or ncu
+                      - We can see all the outdates packages and their new versions available
+                      - But if there're not new versions available, we dont get anything in terminal
+     - Then we run => npm-check-updates -u
+                         With this we upgrade(update) to the latest versions ONLY in the package.json
+                         is not installed yet!!
+     - Finally => npm i
+
+
+-- Terminal 
+npm outdated 
+
+-- Output:
+Package  Current  Wanted  Latest  Location
+                        Depended by
+mongoose     5.7.1   5.7.1   6.0.3  npm-demo              
+underscore     2.1.2   2.1.2   2.1.3  npm-demo
+
+
+
+
+-- Terminal
+npm update 
+
+
+-- Terminal
+> npm i -g npm-check-updates            => install this new package(command line tool)
+> ncu                                   => short of npm-check-updates
+> ncu -u                                => update the package.json
+> npm i                                 => Install all of package.json   
