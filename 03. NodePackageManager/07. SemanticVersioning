@@ -1,0 +1,44 @@
+Semantic Versioning
+    In dependencies we can see their version and a curious character:
+    ^6.4.4
+    
+    SemVer(Semantic Versioning):
+     - In SemVer the version of a Node Package had three components:
+       - 1st: Major version, used for adding new feature that potentially can break the existing API
+       - 2nd: Minor version, used for adding new features that font break the existing API
+       - 3rd: Patch version/release (used for bug fixes)
+    
+     - e.g In the current version of mongoose(6.4.4) developers find a bug, they fix a bug and release a new version:
+           6.4.5  => Increase patch version
+
+     - e.g Mongoose developers add new feature without break the API, increase the minor version:
+           6.5.0  => In this version haven't found a bug yet
+
+     - e.g If add new feature can break existing app that depend upon this version of mongoose
+            7.0.0 
+    
+
+    Caret character(^):
+     - Tells to NPM that we're interesting in any version of mongoose as long as:
+        - the Major version is the same (6)
+        So if there's a newe/minor of Patch version available, we will be interested in that package as well
+    
+        e.g If someone install using => npm i
+           - npm checks if there's a new version of mongoose but keeping the same Major version:
+             In other words ^6.4.4 is equivalent to 6.x
+
+    Tilde Character(~):
+     - Tells to NPM that we're interesenting in any version as lon as:
+       - the Major version is the same (6)
+       - the Minor version is the same (8)
+
+       e.g If someone install using => npm i
+           - npm checks if there's a new version of mongoose but keeping the same Major and Minor version:
+             In other words ~6.4.4 is equivalent to 6.4.x
+
+
+    Problems:
+     - Maybe is possible that even with Tilde or Caret character, when installing a different Patch or 
+       Minor version generates a problem with our app. So we can remove these characters and whoever want 
+       to install this app => always will install the same version!
+    
