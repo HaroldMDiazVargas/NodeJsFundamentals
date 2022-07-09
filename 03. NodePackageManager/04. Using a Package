@@ -1,0 +1,40 @@
+Using a Package
+    Createa file called index.js in the root of our Node app
+
+    Loading underscore package:
+     - We load using require() function
+    
+    Require() function steps:
+     - Assumes that is a core module
+     - If not, assumes that is a file or folder(with index.js inside)
+     - If not, assumes that the module exists inside the:
+       - node_modules folder
+     
+
+    Using underscore package:
+     - Head over documentation in underscorejs.org
+     - This library includes a lot of usefult utility functions:
+       - contains
+       - find
+       - filter
+       - where
+       - ...
+     - contains function:
+      - takes 2 arguments: array and the value we're evaluting if exist in the array
+      - return boolean: true if the value if in the list
+    
+
+-- index.js
+
+var _ = require('underscore');
+
+var result = _.contains([1, 2, 3], 2);
+console.log(result);
+
+-- terminal
+❯ node .\index.js
+true
+
+
+
+
