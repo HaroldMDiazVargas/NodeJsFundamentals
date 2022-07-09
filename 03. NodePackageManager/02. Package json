@@ -1,0 +1,42 @@
+Package.json
+    At this point we have a folder e.g npm-demo/ that represent our Node app.
+    Before add any Node Packages to our app:
+    - We need to create a file called: package.json: This is a json file that includes some basic information about our app
+      e.g name, version, authors, address git repo, depedencies,...
+          all these are metadata of our app
+    
+    Creating package.json file:
+    - We run: npm init, this to create this file step by step
+      - We need to answer bunch of questions:
+        - package name: (npm-demo), this if the default name takes the folder where we're creating this file
+        - version: (1.0.0)
+        - description:
+        - entry point: (index.js)
+        - test command:
+        - git repository:
+        - keywords:
+        - author:
+        - license: (ISC)
+        - Finally we have all the key:value pairs that represent all the metadata about our project
+        - Is this correct ? Ok
+    
+    - Faster way supplying a flag:
+      - npm init --yes: this way we dont have to go to each question one by one
+
+    
+-- npm-demo/package.json
+
+{
+    "name": "npm-demo",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "description": ""
+}
+
+
