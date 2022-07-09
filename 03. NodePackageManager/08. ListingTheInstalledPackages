@@ -1,0 +1,19 @@
+Listing the Installed Packages
+    When we restore the dependencies exist the possibility that:
+     - Version of the dependencies according the package.json are different of version package inside on the 
+       node_modules/ folder(higher)
+
+    Current version:
+     - There're two ways to see the actual version installed:
+       - Look the package.json file for the corresponding dependencie:
+         - Go to node_modules/depencyName/package.json
+           - At the end of this file => "version":"x.x.x" 
+       
+       - Run in terminal => npm list
+        
+
+-- Terminal
+
+npm list 
+npm list --depth=0 => equivalent to => npm list
+npm list --all  => see tree of dependecies of the dependecies
