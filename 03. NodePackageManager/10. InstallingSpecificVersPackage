@@ -1,0 +1,11 @@
+Installing a Specific Version of a Package
+    Sometimes we need to install a specific version(not the latest):
+
+    In terminal:
+     - Run => npm i packageName@version
+
+     We can check using => npm list => to check if the version is installed correct in node_modules/ folder
+
+
+--terminal
+npm i mongoose@2.4.2
