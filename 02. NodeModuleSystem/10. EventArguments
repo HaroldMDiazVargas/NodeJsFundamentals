@@ -1,0 +1,71 @@
+Event Arguments
+    When we want to raise an Event we also want to send some data about that event.
+    e.g - A remote logging service generates an 'id' for that message, maybe we want to pass that id to the client
+        - A remote service gives us URL to access to the log message directly
+    
+    So when we raise an event we can add additional arguments:
+     - Event Arguments:
+                    emitter.emit(eventName, argument1, argument2, ...)  => Some people use as magic numbers
+                    emitter.emit(eventName, {id: 1, url: 'http://' })   => is a best practice to encapsutaled as an object
+        
+    And in a listener registered to that event with arguments, can also receive the Event Arguments:
+     - function(arg) => other peope use name convention as e, eventArg
+
+    In ES6 we have a feature called Arrow Function:
+     - function(arg){}, we drop the 'function' keyword and to separate the arguments of the body function we use an arrow:
+     - (arg) => {}
+
+
+
+--app.js
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+
+emitter.on('messageLogged', function(arg){
+    console.log('Listener called', arg); 
+});
+
+emitter.emit('messageLogged', {id: 1, url: 'http://'} );
+
+--Output:
+Listener Called {id: 1, url: 'http://'}
+
+
+
+
+Exercise. Imagine in the Logger module, before calling our remote service to log the message, we're going to raise 
+          an event called logging and while raising this event send some data(message we want to log)
+
+
+-- logger.js
+var url = 'http://mylogger.io/log';
+
+function log(message){
+    // Send an HTPP request
+    console.log(message);
+}
+
+module.exports.log = log;
+
+
+-- app.js
+const log = require('./logger');
+
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+   
+
+emitter.on('logging', function(arg){
+    console.log('message: ', arg);
+    log('message');
+
+
+});
+
+emitter.emit('logging', {message: 'logging...'});
+
+
+
+
+--Output:
+
