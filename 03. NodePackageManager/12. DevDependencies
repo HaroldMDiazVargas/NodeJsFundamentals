@@ -1,0 +1,37 @@
+DevDependencies
+    All the dependencies we've installed are: 
+     - Application Dependencies: Our app needs these dependencies in order to function propertly
+                                 e.g mongoose, underscore.
+
+    But we have other kind of dependencies:
+     - Development Dependencies: Dependencies only used during development, they should not go on the production 
+                                 environment where we deploy our app
+         e.g tools for running unit test, tools for static analysis in our code, tools for bundle JavaScript code, ...
+
+    Install JSHint:
+     - Node Package which is a static analysis tool for JavaScript code and looks for potential problems or
+       syntactical errors.
+     - We run => npm i jshint --save-dev 
+                 --save-dev is a flag to specify as development dependency
+    
+    In package.json:
+     - We can see jshint is under a new property called "devDependencies", this tells Node that this is a 
+       development dependency and it should not go in the production environment.
+     - "devDependencies": {
+            "jshint": "^2.13.5"
+            }
+
+    In node_modules/ folder:
+     - We can see the folder of jshint
+
+
+
+    All dependencies wether are Application Dependencies or Development Dependencies they are stored inside 
+    of the node_modules/ folder. Only segregate in package.json
+
+
+-- Terminal 
+npm i jshint --save-dev
+
+        
+    
