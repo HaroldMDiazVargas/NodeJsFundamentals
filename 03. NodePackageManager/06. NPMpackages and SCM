@@ -1,0 +1,30 @@
+NPM Packages and SCM
+    The size of node_modules/ folder will grow significantly in a real world app (fewGB). 
+    We dont want to include this folder when:
+     - checking our source code => into a source control repository
+     - send the app to someone else e.g friend by email, usb, so on
+
+    Dependencies:
+     - All our dependecies are stored in package.json file. With this file wee can easily restore the exact version
+       of the dependecies of any machine.
+    
+    Simulate:
+     - Remove node_modules/
+     - In terminal => npm i
+                      - Looks package.json
+                      - Download all dependecies from npm registry
+    
+    Exclude folder from Git:
+     - git init (if we dont have git repository)
+     - In root of the app folder => .gitignore file
+                                    - list all files e.g node_modules/
+
+
+
+-- Terminal
+npm i
+
+
+
+-- .gitignore 
+node_modules/
