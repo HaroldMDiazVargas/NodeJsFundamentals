@@ -1,0 +1,60 @@
+File System Module
+    Work with files in Node.
+    - In documentation https://nodejs.org/dist/latest-v16.x/docs/api/fs.html
+      we have comprehensive methods for working with files and directories
+
+    Load File System Module:
+      const fs = require('fs');
+    
+    IntelliSense:
+        fs.: we can see almost every operation displayed come in two forms:
+             - Synchronous/Blocking or Asynchronous/Non-Blocking
+               e.g access: Asynchronous method
+                   accessSyn: Synchronous method
+    
+    We should avoid the Synchronous methods, these are purely for simplicity. In real world app we should use Asynchronous
+    methods because these are Non-Blocking.
+
+    Example of readdirSync method:
+     - We see this method just to understand the readdir method, this method takes:
+       - path 
+     - This method returns:
+       - all the files/folders in the current folder. So it returns a string array
+
+    Example of readdir method(Async form):
+      - All the Asynchronous methods take a function as the last argument:
+        - Node call this function when Asynchronous operation is completed, this function is called a callback.
+          this functions takes:
+          - error
+          - result: in this case a string array
+          In the code block of this function:
+          - We need to check if we have an error or the result. Only one of these arguments will have a value, the other
+            will be NULL.
+
+--app.js
+const fs = require('fs');
+
+const files = fs.readdirSync('./');
+
+console.log(files);
+
+--app.js
+const fs = require('fs');
+
+fs.readdir('./', function(err, files){
+    if (err) console.log('Error', err);
+    else console.log('Result', files);
+
+});
+
+
+
+
+--output:
+[ '.git', 'app.js', 'logger.js']
+
+
+
+
+
+
