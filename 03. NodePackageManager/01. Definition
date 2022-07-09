@@ -1,0 +1,18 @@
+Node Package Manager (NPM)
+    Is a command line tool as well as registry of third party libraries that we can add to our Node apps.
+    For pretty much any kind functionality that we want to add to our apps, there's most likely a free open source
+    library or package or Node module on NPM registry.
+    
+    Head over: npmjs.com
+    - Currently there're 475,000 building blocks on NPM. All these are free and reusable code.
+
+    Add new functionality/module/building block:
+    - we can creare our own Node Modules and publish them on npm.
+    
+    Add modules to our app:
+    - We use command line tool 'npm'
+    - npm comes with Node, but are programs developed indepently
+
+    Install npm of a given version:
+    - sudo npm i -g npm@5.5.1
+    
