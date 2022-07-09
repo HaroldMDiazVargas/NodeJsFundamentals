@@ -1,0 +1,22 @@
+Package Dependencies
+
+    Exercise. Install node package called 'mongoose', this is used to store our data in mongoDB.
+
+    In node_modules/:
+     - We see a lot of libraries installed we never install:
+       - These are other Node Packages that mongoose is dependent upon. Before all these dependencies of a Node 
+         Package were stored in the folder of the installed node package. But this creates a mess!
+         Exeption:
+         - If one of these packages uses a different versions of one of these depedencies, that version will 
+           be stored locally in that package!
+
+-- node_modules/ 
+> @types
+> bae64-js
+> bson
+> buffer
+...
+> mongodb
+> mongoose
+...
+    
