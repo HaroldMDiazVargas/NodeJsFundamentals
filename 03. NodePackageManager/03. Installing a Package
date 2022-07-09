@@ -1,0 +1,52 @@
+Installing a Package
+    Add a third party library/NodePackage to our Node app
+
+    Underscore:
+     - Popular JavaScript library
+     - Installation:
+       - Head over npmjs.com
+       - search for underscore 
+       - we see the command line to run to install this library. Also we see some info:
+         - publisher
+         - latest version
+         - address of github
+         - homepage of this package
+         - name of collaborators
+         - basic stats: downloads
+
+       - In terminal => npm i underscore or npm install underscore
+
+    Package.json changes:
+     - In package.json we will see:
+       - "dependencies" : new propery added
+       - "underscore": "^1.13.4"
+     This means in package.json we will have all the dependencies of our project and their versions.
+
+    npm install:
+     - When we run this command:
+       - NPM is going to download the latest version of the given package from npm registry
+       - Then NPM is going to store this package inside a folder => node_modules/
+         - node_modules/ contains:
+           - folder for every package
+             - each folder contains a bucnh of files:
+               - LICENSE
+               - README.md
+               - package.json: Every package has its own package.json file just like our node app
+                               We see info/metadata about the corresponding package
+               
+
+
+-- Terminal
+
+npm i underscore --save  => this is depracted, not londer need --save to save in dependencies
+
+npm i underscore  !!
+
+
+--npm-demo/
+> node_modules/
+  > underscore
+  .package-lock.json
+package-lock.json
+package.json
+
