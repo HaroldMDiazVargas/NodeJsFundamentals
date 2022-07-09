@@ -1,0 +1,15 @@
+Uninstalling a Package
+    Sometimes we want to uninstall a package if we dont require it.
+
+    Uninstallation:
+     - We run => npm uninstall packageName
+                 npm un packageName
+
+    Changes:
+     - node_modules/ folder => is not longer the folder of the packageName once is deleted!
+     - package.json file => not contains the dependency in the corresponding propery 
+                            wether be "devDependencies" or "dependencies"
+
+
+-- Terminal 
+npm un mongoose
