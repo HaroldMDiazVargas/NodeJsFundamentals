@@ -1,0 +1,127 @@
+HTTP Module
+    We use for creating Networking apps:
+     - we can create a web server that listens for HTTP Requests on a given port. With this we can easily create a backend
+       service for our client apps(web/mobile apps)
+    
+    In the documentation https://nodejs.org/dist/latest-v16.x/docs/api/http.html
+    we can see various classes:
+     - Class: http.Agent
+     - Class: http.ClientRequest
+     - ...
+     - Also we can see various methods e.g http.createServer(), http.request(),...
+    Each of these classes have bunch of properties, methods and events
+
+    Loading HTTP Module:
+        const http = require('http);
+    
+
+    Creating a web Server:
+     - We use createServer() function to create a web server, we save the result in a server object. This object is an EventEmitter
+       so it has all its capabilites.
+       So we can use:
+       - server.on(eventName, callback), we can use this method to handle the event everytime there's a new connection or new request
+                                         we can find in the documentation the name of some events:
+                                         - checkContinue
+                                         - checkExpectation
+                                         - clientError
+                                         - close
+                                         - connect
+                                         - connection
+                                         - request
+                                         - upgrade
+
+                                         And the callback/listener is a function:
+                                          - with one argument: listener: (socket of type Socket class)
+                                          - that returns void
+
+       - server.listen(port): we can use this .listen() method to listen in a given port
+
+        Test:
+        - When we run the app the server will listen on port e.g '3000'
+        - Head over localhost:3000 and we can see in terminal New connection...
+
+        -- app.js
+        const http = require('http');
+
+        const server = http.createServer();
+
+        server.on('connection', (socket) => {
+            console.log('New connection...');
+        })
+
+        server.listen(3000);
+
+        console.log('Listening on port 3000...');
+
+        --Output
+        Listening on port 3000...
+        New connection...
+
+
+    
+    In real world:
+     - We're not going to respond to 'connection' event to build an HTTP service, this is a very low level.
+     - What we common do is pass a callback function to the createServer() method. This function:
+        - takes 2 parameters:
+         - request 
+         - response
+        - So in this function instead of working with a Socket, we can work with the actual request or response objects
+         - request(req): we can check if url is equal to any url
+         - response(res): we can send something to the client using res.write() 
+                          to end the response we use res.end()
+
+        - If we want to build a backend service for our web/mobile app, we need to:
+         - handle various routes in the callback function
+           we common return something to the user using JSON.stringify:
+           - JSON.stringify(arrayOfObjects/array): Here we need to see the database(not for now)
+                                                   converts an array into a string using JSON syntax and write to the response
+    
+
+     - Building a web server with node is very easy, but in realworld we're not going to use HTTP module to build 
+        a backend service for our app. Reason:
+        - As we add more routes, the code get more complex. Instead we use a framework called Express:
+          - Express framework: gives to our app a clean structure to handle various routes. Internally the Express 
+                               is built on top of the HTTP module in Node.
+
+        -- app.js
+        const http = require('http');
+
+        const server = http.createServer( (req,res) => {
+            if(req.url === '/'){
+                res.write('Hello world');
+                red.end();
+            }
+
+            if(req.url === '/api/courses'){
+                res.write(JSON.stringify([1, 2, 3]));
+                res.end();
+            }
+
+
+        } );
+
+        server.listen(3000);
+
+        console.log('Listening on port 3000...');
+
+        --Output
+        Listening on port 3000...
+        New connection...
+
+        --Browser in localhost:3000
+        Hello world
+
+        --Browser in localhost:3000/api/courses
+        [
+            1,
+            2,
+            3
+        ]
+
+
+
+    
+    
+
+
+    
