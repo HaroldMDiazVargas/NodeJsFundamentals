@@ -1,0 +1,22 @@
+Introducing Express
+    Using HTTP Module and using:
+     - const server = http.createServer((req, res) => { DefineRoutes and responds })
+     As we define more routes:
+      - We need to add more 'IF' clauses to the function
+      - Is not very maintainable app
+
+    Express
+        The most popular Framework for building web apps and web services on top of Node that gives us a proper 
+        structure to easily add more routes while keeping our app code maintainable
+
+        - Head over npmjs.com/package/express
+          - Statitics => A lot of downloads(very popular)
+        
+        Pros:
+         - Very fast
+         - Lightweight
+         - Good documentated
+
+        Installation:
+         - In the folder of the Node app, run:
+           npm i express
