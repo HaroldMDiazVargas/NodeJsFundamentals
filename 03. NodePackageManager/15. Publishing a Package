@@ -1,0 +1,72 @@
+Publishing a Package
+    We can create our own Node Packages and publish them on NPM Registry.
+
+    Steps:
+     - Create a new folder with name of library (use an unique name)
+       e.g lion-lib-0103930
+    - In that folder:
+      - Create a package.json file using => npm init --yes
+      - Create Entry Point of our package:
+        So we create index.js file and export something e.g Add function
+    
+    - Create account(if not created) of npmjs:
+      - We run => npm adduser
+                - Username: unique username in lowercase
+                - Password: minimum 10 characters required
+                - Email
+    
+      - If we have an account, just run => npm login
+
+
+    Publish package:
+     - In order to publish the package we run => npm publish
+
+    
+    Installing published Package:
+     - Now that we published the package, we can installing it in another Node app just running:
+       - npm i lion-lib-0103930
+       And this will make the next changes in the current project:
+       - package.json => will be added this module as a dependency
+       - node_modules/ => will be a new folder lion-lib-0103930/ and its package.json will have more metadata(added by NPM)
+    
+    Using published Package in a project:
+     - To use it just like any module we use require(function):
+         var lion = require('lion-lib')
+         var result = lion.add(1,2);        => using a method of this published module
+
+
+
+
+
+
+
+-- npm-demo/lion-lib/index.js
+module.exports.add = function(a, b) { return a + b };
+    
+
+
+-- Terminal
+> npm login
+Username: harolddiaz10
+Password:
+Email: (this IS public) harold.diazv1@gmail.co
+m
+
+-- Output
+Logged in as harolddiaz10 on https://registry.npmjs.org/.
+
+
+-- Terminal
+npm publish
+
+-- Output
++ lion-lib-0103930@1.0.0
+
+
+
+
+
+
+
+-- Terminal of another Node app
+npm i lion-lib-0103930
