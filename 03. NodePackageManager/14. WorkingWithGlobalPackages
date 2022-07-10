@@ -1,0 +1,29 @@
+Working With Global Packages
+    We have installed dependencies particular only to one Node app, these packages are called Local Packages
+
+    But on NPM registry:
+     - There're  Node packages that are not specific to an app, these are often command line tools
+       that we want to access from everywhere.
+       These Node packages are not tied to a specific folder or specific project
+
+        e.g - npm is one of the Node packages, is a command line tool we can run from any folder
+            - ng (@angular/cli), we use it to create new angular project
+            - ts (typescript)
+            - ...
+    
+    Listing all the outdated Global Packages:
+     - We run => npm -g outdated
+                 - We can see all the global packages are outdated.
+                 - If there're not global packages outadated, we wont see anything in the terminal
+
+    
+
+-- Terminal 
+npm -g outdated
+
+-- Output@angular/cli
+               Current Wanted Latest Location
+firebase-tools
+npm
+typescript
+webpack
