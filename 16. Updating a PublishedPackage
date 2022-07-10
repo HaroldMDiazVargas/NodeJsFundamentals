@@ -1,0 +1,49 @@
+Updating a Published Package
+    To publish newer version of our Packages e.g we need to add a new functionality in our Package.
+
+    Updating our Package:
+     - We export a new functionality:
+       module.exports.multiply = function(a, b ){ return a*b };
+
+
+    Publish the package:
+     We can't use just => npm publish => get error because we can't publish over the previously published 
+                                         version 1.0.0
+
+    Defining the update version number:
+     - Depending of the change we're going to make, we need to update the version number:
+       - Major new feature with breaking changes 
+       - New feature without breaking changes
+       - Bug fix
+
+     - In this case we are just adding new feautre without breaking any changes:
+       - Because any app that has the v1.0.0 will continue work without problems, just a new feature was added
+    
+    Publishing the new package version:
+     - There're two ways to do this:
+     
+       - We can go to package.json and change manually the "version" property:
+         -  "version" : "1.0.0" => change to => "version": "1.1.0"
+
+       - We can use npm:
+         - Run => npm version major/minor/patch  => according the version number defined!
+                  npm version minor (in this case)
+         - then => npm publish 
+
+     
+
+
+
+
+-- npm-demo/lion-lib/index.js
+module.exports.add = function(a, b) { return a + b };
+module.exports.multiply = function(a, b ){ return a*b };
+    
+-- terminal (lion-lib)
+npm version minor
+-- output:
+v1.1.0
+-- terminal (lion-lib)
+npm publish
+--output:
++ lion-lib@1.1.0 
