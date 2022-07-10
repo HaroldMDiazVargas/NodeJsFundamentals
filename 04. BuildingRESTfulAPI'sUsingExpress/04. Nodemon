@@ -1,0 +1,32 @@
+Nodemon(Node Monitor)
+    Everytime we make a change to the index.js code where we're making our Web Server:
+     - We need to stop the process in therminal and start again
+
+    Installation:
+     - In terminal => npm i -g nodemon
+
+    Using nodemon:
+     - We run our app using nodemon => nodemon index.js
+     - So nodemon is watching all the files in the folder:
+       - *.* => any files with any extensions
+
+    Proob:
+     - Change index.js => Save!
+     - Look the terminal => restarint due to changes!
+
+    
+
+-- Terminal
+> npm i -g nodemon
+> nodemon .\index.js
+
+[nodemon] 2.0.19
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node .\index.js`
+Listening on port 3000
+[nodemon] restarting due to changes...
+[nodemon] starting `node .\index.js`
+Listening on port 3000
+    
