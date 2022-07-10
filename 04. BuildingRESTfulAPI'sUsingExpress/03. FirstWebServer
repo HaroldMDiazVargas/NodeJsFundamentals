@@ -1,0 +1,83 @@
+Building our First Web Server
+
+    Loading express module:
+     - We use the require() function to load express module
+       - When loading, it returns a function:
+         - When we call this function, it returns an Object of type: Express
+           By convention we call this object as 'app', and has useful methods:
+           - app.get()
+           - app.post() :For handling an HTPP Post Request to an endpoint
+           - app.put()
+           - app.delete()
+        
+    
+    app.get():
+     - Let's start with this, implement a couple of endpoints that response to an HTTP GET Request
+     - This method takes two arguments:
+       - path/url: Represent a path e.g '/' represent the root of our website
+       -  callback function: function will be called when we have an HTTP GET Request to this endpoint
+                             this function has two arguments:
+                             - request(req): request object has a bunch of useful properties that gives us 
+                                             information about the incoming request => see documention in expressjs.com
+                                             we have e.g:
+                                             - req.baseUrl
+                                             - req.body
+                                             - req.cookies
+                                             - req.cookies
+                                             - req.fresh
+                                             - ...
+                             - response(res): response when we get an HTTP GET Request to the 'path' defined in the 
+                                              1st argument.
+                                              e.g res.send('Hello World');
+    - Defining Routes:
+      So instead of using 'IF' we use just the get() method to defining these routes. And if app grows 
+      we can move these routes to different files. e.g We can move all routes about courses to => courses.js
+      
+      - Root route:
+        - path: '/'
+        - callbackFunc: res.send('Hello world')
+
+      - courses route:
+        - path: '/api/courses'
+        - callbackFunc: In real world we would get the list of courses from the database and return it
+                        For now return an array of numbers:
+                        - res.send([1, 2, 3]);
+
+    listen on a given port:
+     - we use the listen method:
+       app.listen(portNumber, callbackFunc):
+       - portNumber: Is the number of the port where we want to listen e.g 3000
+       - callbackFunc(Optional): this function will be called when the app starts listening on the given port
+    
+
+
+
+
+-- index.js 
+
+const express = require('express');
+const app = express(); 
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+})
+
+app.get('/api/courses', (req,res) =>{
+    res.send([1, 2, 3]);
+})
+
+app.listen(3000, ()=>{
+    console.log('Listening on port 3000');
+})
+
+
+-- Terminal
+❯ node .\index.js
+Listening on port 3000
+
+
+-- Browser http://localhost:3000
+Hello World
+
+-- Browser http://localhost:3000/api/courses
+[1,2,3]
