@@ -1,0 +1,82 @@
+RESTful Services or RESTful APIs
+    Most architectures follow these architectures:
+     - Client or frontend: APIself is the client-side of the app
+     - Server or backend: Under the hood the app needs to talk to the server to :
+                          -get or save the data.
+                          In our Server we expose a buch of:
+                           - Services: Are accesible by the HTTP protocol
+    
+    The communication between these happens using:
+     - HTTP protocol: The same protocol that powers our web
+    
+
+    The client can directly call the Services by sending HTTP Request
+
+
+    REST:
+        - Representational State Transfer
+        - Is a convention for building these HTTP Services
+    
+    We use simple HTTP Protocol Principles to provide supports to:
+     - Create
+     - Read
+     - Update
+     - Delete 
+      We refere to all these operations together as CRUD operations
+    
+    e.g Company called VIDLY for renting movies:
+        - Client-app: Manage the list of the customers
+        - Server-side: We expose a Service and an endpoint like: http://vidly.com/api/customers
+                       the client can send HTTP Request to this endpoint to talk to our Service
+                       Things about the endpoint:
+                        - Address can start with http or https, depends on the app and its requirements
+                          if we want the data exchange in a secure channel we would use https
+                        - Next we have the domain of our app e.g vidly.com
+                        - Next we have /api is not compulsory, but a lot of companies use this convention to 
+                          expose the RESTful services. Can be vidly.api.com or after the domain
+                        - Nest we have /customers, refer to the collection of customers in our app.
+                          In the REST world we refer to this as a RESOURCE. We can expose our RESOURCES such as:
+                          - customers: All the operations about the customers such as creating, updating a 
+                                       customer will be done by sending an HTPP Request to his endpoint
+                          - movies
+                          - rentals or various endpoints
+
+                        - The type of HTTP Request sending to an endpoint determinates the kind of the operation:
+                          every HTTP Request has:
+                          - Verb/Method: Determinatesi its tyoe of intention. The standard HTTP Methods:
+                                         - GET: For getting data.
+                                         - PUT: For updating data
+                                         - DELETE: For deleting data
+                                         - POST: For creating data
+    
+    
+    Examples of standard HTTP Methods:
+    - GET CUSTOMERS
+       - Request sending to this endpoint => GET /api/customers
+       - Response of our Server should show something like=>[
+                                                        { id:1, name: ''},
+                                                        { id:1, name: ''},
+                                                        ...
+                                                        ]
+    - GET single customer
+       - Request sending to this endpoint but include id of the customer => GET /api/customers/1
+       - Response of our Server => { id:1, name:'' }
+
+    - UPDATE a customer( we update maybe one property)
+       - Resquest sending to the server(endpoint) but we specify the id to the customer => PUT /api/customers/1
+         Additionally we include the customer object in the BODY of the request => { name: '' }
+       - Server updates the customer with the given id
+    
+    - DELETE a customer
+       - We send HTPP Request to the endpoint => DELETE /api/customers/1
+         we don't need to include the customer object in the body of the request. All we need to delete a customer 
+         is an ID
+    
+    - CREATE a customer
+       - We sen HTTP Request to the endpoint => POST /api/customers
+         we dont have the id in the address, we are not dealing with a specific customer. We're working with 
+         the collection of customers => posting a new customer in this collection
+         But we should include the customer object in the BODY of the Request.
+       - Server gets this object and creates this customer for us
+    
+       
