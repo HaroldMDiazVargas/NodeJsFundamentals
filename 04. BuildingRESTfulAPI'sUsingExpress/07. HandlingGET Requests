@@ -1,0 +1,82 @@
+Handling HTTP GET Requests
+
+    Courses data:
+     - At this moment dont worry about the database where is stored the courses information. So we just store 
+       in an array a few objects about the courses and define two properties:
+        const courses = [
+                        { id: 1, name:'course1'},
+                        { id: 2, name:'course2'},
+                        { id: 3, name:'course3'}
+                    ];
+    
+    Courses Route:
+     - We already have defined the courses route, so we just send the array
+
+    Single course route(param id):
+     - Here we're dealing with a Route Parameter called 'id', we need to write some logic to determinates 
+        what's the course that we want to access according to the Route Parameter that matches with the 
+        courses array
+     - For this we use:
+       - find(arrowFunction) function: This is a global function for every array JavaScript that find an element 
+                                       when one of the elements of the array matches a given criteria. In this case 
+                                       when a course of the array matches with a logic.
+
+
+     - Response according the value:
+       - In this case if we don't find a course by a given id. By convention  we should return a Response 
+         with the HTTP STATUS CODE 404 => Object Not Found
+         - So we can set the status and also send a message using:
+            res.status(404).send('The course with the given ID was not found');
+       - If we find the course an it exists, we just response the course
+
+
+-- Index.js 
+
+const express = require('express');
+const app = express(); 
+
+const courses = [
+    { id: 1, name:'course1'},
+    { id: 2, name:'course2'},
+    { id: 3, name:'course3'}
+];
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+});
+
+app.get('/api/courses', (req,res) =>{
+    res.send(courses);
+})
+
+app.get('/api/courses/:id', (req,res) => {
+
+    const course = courses.find( c => c.id === parseInt(req.params.id) );
+
+    if(!course) res.status(404).send('The course with the given ID was not found');
+    res.send(course);
+
+
+});
+
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=>{
+    console.log(`Listening on port ${port}...`);
+})
+
+
+
+-- Browser in http://localhost:5000/api/courses/2
+{"id":2,"name":"course2"}
+
+
+-- Browser in http://localhost:5000/api/courses/4
+
+DevTools(Nework-All):
+
+Request URL: http://localhost:5000/api/courses/4
+Request Method: GET
+Status Code: 404 Not Found
+Remote Address: [::1]:5000
+Referrer Policy: strict-origin-when-cross-origin
