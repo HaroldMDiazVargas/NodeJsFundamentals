@@ -1,0 +1,86 @@
+Handling POST Requests
+    Respond to HTTP POST Requests, for this we use express().post() to create a new POST Request
+
+    app.post() Method:
+     - Path: We need to specify a path just like as the .get() method.
+     - Route Handler/Callback(req,res): We need to read the resource object that should be in the body of 
+                                        the request, use these properties to create a new object and then
+                                        add that object to the RESOURCE(collection of the data)
+    
+    POST new course:
+     - Path: '/api/courses'
+     - Route Handler:
+       - We create a new course object
+         - We need to add the corresponding properties just like the courses array:
+           - id: we need to manually assigned because we're not working with a database, so we just add 1 to the total
+                 courses according length of the array. If we would working with a database the id would be assigned 
+                 by this.
+           - name: We need to read this from the body of the request. We assume that in the body of the request
+                   there's an object and that object has a 'name' property. This object is sent when the 
+                   client sends a POST Request
+     - Then we push in our array the new course
+     - Finally by convention when we POST an object to the server when the server creates a new object resource
+       it should return that object in the body of the response
+       - res.send(course)
+       - Reason: Because we're assigning the 'id' on the server so we need to return the course object to the 
+                 client because chances are that the client needs to know the id of the new object resource
+    
+
+    Enable Parsing of JSON Objects:
+     - We need to enable parsing of JSON objects in the body of the request in order to:
+       req.body.name (this line works)
+     - This is because by default this feature IS NOT ENALBLE in express
+     - To enable:
+       - On top called:
+         - app.use(express.json()) => Adding a piece of middleware, when we call express.json() this method 
+                                      returns a piece of middleware and then we call app.use() to use that 
+                                      middleware in the Request Processing Pipeline.
+
+
+-- index.js      
+
+const express = require('express');
+const app = express(); 
+
+app.use(express.json());
+
+const courses = [
+    { id: 1, name:'course1'},
+    { id: 2, name:'course2'},
+    { id: 3, name:'course3'}
+];
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+});
+
+app.get('/api/courses', (req,res) =>{
+    res.send(courses);
+});
+
+app.post('/api/courses', (req,res) => {
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    }
+
+    courses.push(course);
+    res.send(course);
+
+} );
+
+app.get('/api/courses/:id', (req,res) => {
+
+    const course = courses.find( c => c.id === parseInt(req.params.id) );
+
+    if(!course) res.status(404).send('The course with the given ID was not found');
+    res.send(course);
+
+
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=>{
+    console.log(`Listening on port ${port}...`);
+});
+
