@@ -1,0 +1,125 @@
+Input Validation
+    We can't assume that the object sent by the client has a property with a given name in the body of the 
+    request. This because:
+    - client can forget sent this property
+    - client can sent invalid property e.g with name very short
+    
+
+    Input Validation
+     - This is a security best practice because we never can trust what the client sends
+
+    Validation Logic:
+     - We can write validation logic
+       - Check if the property doesn't exist 
+       - Check if the property has a short length
+     - If we have any of the previous hypothesis, we need to return an Error to the client
+       - RESTfult convention is to return a response:
+         - HTTP Status Code 400 => Bad Request
+    
+
+    JOI:
+     - This is a Node Package that makes very easy to us to validate the input
+     - Installation => npm i joi
+    
+    Load Joi:
+     - When we use require() to load this module, we get a class:
+    
+    Using JOI:
+     - First we need to define:
+       - schema: This defines the shape of our objects:
+                - Properties in the object 
+                - Type of these properties
+                - minimum/max characters
+                - range should be a number
+                - ...
+                - We use methods of Joi class( we can see doc):
+                  - Joi.string.min()
+                  - Joi.string.required()
+                  - ...
+       - We use schema.validate() method
+         -takes:
+          - We pass the body => req.body
+         - return: 
+          - the result object that has two properties:
+            - error: Will exist if there's an Error validation. This is a complex object, but we mostly interest
+                     in the details object and its 'message' property to show to the user
+            - value: This contains the object that user sent in the body of the Request
+
+
+-- index.js
+const Joi = require('joi');
+const express = require('express');
+const app = express(); 
+
+app.use(express.json());
+
+const courses = [
+    { id: 1, name:'course1'},
+    { id: 2, name:'course2'},
+    { id: 3, name:'course3'}
+];
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+});
+
+app.get('/api/courses', (req,res) =>{
+    res.send(courses);
+});
+
+app.post('/api/courses', (req,res) => {
+    const schema = Joi.object({
+        name: Joi.string().min(3).required()
+    });
+
+    // const result = Joi.validate(req.body, schema);
+    const result = schema.validate(req.body)
+    console.log(result);
+
+    if(result.error){
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    // if (!req.body.name || req.body.name.length < 3){
+    //     res.status(400).send('Name is required and should be minimum 3 characters')
+    //     return;
+    // }
+
+
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    }
+
+    courses.push(course);
+    res.send(course);
+
+} );
+
+app.get('/api/courses/:id', (req,res) => {
+
+    const course = courses.find( c => c.id === parseInt(req.params.id) );
+
+    if(!course) res.status(404).send('The course with the given ID was not found');
+    res.send(course);
+
+
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=>{
+    console.log(`Listening on port ${port}...`);
+});
+
+
+
+
+-- Request in Postman
+{
+    name: "c"
+}
+
+-- Response
+"name" length must be at least 3 characters long
+
