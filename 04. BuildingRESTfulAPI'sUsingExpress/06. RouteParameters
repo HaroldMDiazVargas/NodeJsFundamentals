@@ -1,0 +1,69 @@
+Routes Parameters
+    To get single of one of our RESOURCES, we need to include the ID in the URL, so we need to have an endpoints
+    linke /api/reourceName/id e.g /api/courses/1.
+    For this we need to add a parameter in the path when we define our route.
+
+    Add Route Parameters:
+     - We add ':paramName' to our route to define a parameter
+       e.g '/api/courses/:id'
+     - We also can add multiple parameters to our routes
+       e.g '/api/posts/:year/:month/' => for example to get posts for a given month and a given year
+    
+
+    
+    Read Route Parameters:
+     - In the handler/callback function of the app.get() method we use the 'request' object that has a 
+       property called 'params' which is an object:
+       - rq.params: This object has key:value pairs where key represents paramName we used in our route 
+                    and value is the corresponding value in the url in the browser
+                        e.g 
+                        {
+                            year: "2018",
+                            month: "1"
+                        }
+    Query String Parameters:
+     - These are parameters that we add in the URL after question mark
+     - These parameters are used to provide additional data to our backend services
+     - We use these parameters for anything that is optional
+       e.g url => localhost:3000/api/posts/2018/1?sortBy=name
+    
+    Read Query String Parameters:
+     - The same way that reading Route Parameters, but instead of 'req.params' we use:
+       - req.query
+          e.g 
+            {
+                sortBy: "name"
+            }
+
+
+
+--index.js
+
+const express = require('express');
+const app = express(); 
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+})
+
+app.get('/api/courses', (req,res) =>{
+    res.send([1, 2, 3, 4]);
+})
+
+app.get('/api/courses/:id', (req,res) => {
+   
+    res.send({params: req.params, query: req.query});
+    
+})
+
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=>{
+    console.log(`Listening on port ${port}...`);
+})
+
+
+
+--Browser on http://localhost:5000/api/courses/1?orderBy=name
+
+{"params":{"id":"1"},"query":{"orderBy":"name"}}
