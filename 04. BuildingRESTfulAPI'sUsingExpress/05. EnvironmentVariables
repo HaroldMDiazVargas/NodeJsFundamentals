@@ -1,0 +1,59 @@
+Environment Variables 
+    We have a hard-code value for the port:
+    - This port will work in our developer machine
+    - This port is not going to work in our production environment. Because when we deploy this app in a 
+      hosting environment, the port is dynamically assigned by a hosting environment. So we can't rely on 
+      3000 to be available
+    
+   Environment Variable
+    - Basically is a variable that is part of the environment in which a process runs:
+      - its value is set outside this app
+    - Typically in Hosting Environment for Node apps we have these Environment Variables called PORT 
+
+    In this app we need to read the value of this PORT environment variable, to do this:
+     - Using the process object: Is a global object and has a property:
+                                 - .env(environment variables).nameOfOurEnvVariable
+                                 - e.g process.env.PORT
+    
+    Test
+     - In this machine we don't have an Environment Variable called PORT that's why 3000 is used as the PORT 
+       for this web server, so we need to SET/EXPORT this Env Variable.
+    
+    Set an Environment Variable
+     - On mac: Execute the 'export' command
+     - On windows: Use 'set' command
+            In Command Prompt: set PORT=5000
+            In Power Shell: $env:PORT=5000
+            In Bash (Windows): export PORT=5000
+       Dont' add space before/after '=' sign
+                    
+
+
+-- index.js
+const express = require('express');
+const app = express(); 
+
+app.get('/', (req,res) => {
+    res.send('Hello World');
+})
+
+app.get('/api/courses', (req,res) =>{
+    res.send([1, 2, 3, 4]);
+})
+
+
+const port = process.env.PORT || 3000;
+app.listen(port, ()=>{
+    console.log(`Listening on port ${port}...`);
+})
+
+
+--Terminal
+❯ $env:PORT=5000
+❯ nodemon .\index.js
+[nodemon] 2.0.19
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node .\index.js`
+Listening on port 5000...
