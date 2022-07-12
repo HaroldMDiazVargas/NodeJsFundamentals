@@ -1,0 +1,45 @@
+Built-in Middleware
+    In express we have a few built-in Middleware functions:
+     - express.json(): This method when is called returns a Middleware function. It parses the body of the request
+                       and if there's JSON object}, it popullated req.body property
+     - express.urlencoded(): This method returns a Middleware function. This parses incoming requests with 
+                             URL encoded payloads => key=value&key=value; and parses this and popullates 
+                             req.body like a JSON object:
+
+                             Basically if we have an HTML form with input fields and we POST that form to the 
+                             server we will send a URLencoded; and with this Middleware function we parse it 
+                             and we get a JSON Object in the req.body property!
+                            - extended property:
+                              We pass an object to this method and pass the => extended: true; with this 
+                              we can pass:
+                               - arrays
+                               - complex objects
+                               Using the urlencoded format!
+     - express.static(): We use this to serve static files:
+                        - we pass:
+                          - nameOfFolder: We pass the name of the folder where we want to put all our 
+                                          static access like: CSS, images, so on.
+                        And with this Middleware function we can server all our static content; and in the 
+                        URL we dont have 'public': these static content is sever from the root of the site
+
+-- index.js
+
+const express = require('express');
+const app = express(); 
+const logger = require('./logger');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'))
+
+app.use(logger);
+
+
+
+-- public/readme.txt
+This is a readme file!
+
+
+-- Browser http://localhost:3000/readme.txt
+This is a readme file!
+
