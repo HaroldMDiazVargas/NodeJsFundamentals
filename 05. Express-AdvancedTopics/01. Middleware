@@ -1,0 +1,43 @@
+Middleware or Middleware Function
+    Core concept in express. This is basically a function that takes:
+     - request object
+     - return a response to the client or either pass control to another Middleware function
+
+    Examples:
+     - Route Handler function: In express every Route Handler function we have is tecnhically a Middleware function
+                               because it takes:
+                               - request object 
+                               - returns a response to the client 
+                               So it terminates the request-response cycle
+    
+     - express.json(): When we call this method, it return a Middleware function. Job of this function is:
+                        - read a request: If there's a JSON object in the body of the request it parses the body
+                                          of the request into a JSON object and then will set:
+                                          - req.body property
+                       Analyzing in runtime:
+                       - When we receive a request on the server:
+                         - the request goes into the Request Processing Pipeline which has:
+                           - one or more Middleware functions and each of these:
+                             - either terminates the request-response cycling by returning a response object 
+                             - or it will pass control to another Middleware function
+    Current code:
+     - In our current implementation the Request Processing Pipeline has two Middleware functions:
+       - 1. Middleware function that parses the body of the request into a JSON object, which in this case
+            doesn't terminate the request-response cycling; it passes the control to the 2nd Middleware function
+       - 2. Our Route Handler, we have the request object with the body properties popullated; so we perform 
+            some operations and then terminate the request-response cycling by returning a response to the client.
+                         
+    Express Middleware function
+     - exoress includes a few built-in Middleware functions
+    
+    Create custom Middleware functions
+     - We can create these, and we can put at the front of our Request Processing Pipeline. So every request 
+       that we send to the server will go throught our custom Middleware function, and we can:
+       - perform cross-coding concerns: For example, do:
+                                        - loggin
+                                        - authentication
+                                        - authorization
+                                        - ...
+    
+    In other words
+        Express App is nothing but a bunch of Middleware functions
