@@ -1,0 +1,44 @@
+Building Custom Middleware functions
+
+    Install Middleware function:
+    - We use app.use() to install a middle ware function in our Request Processing Pipeline:
+      - We pass a function that takes:
+        - request(req)
+        - response(res)
+        - next: This is a references to the next Middleware function in the pipeline
+      - and in the body of the function:
+        - We add code block e.g logging every request
+        - Then we add => next() to pass control to the next Middleware function in the pipeline. 
+                         if we dont do this and because we're not terminating our request-response cycling, 
+                         our request will end unhunging(descolgar, take down)
+       
+    Middleware functions:
+     - Our Middleware are called in sequences. The last Middleware function is called in the sequence 
+       is our Router Handler
+
+
+
+-- index.js
+
+const Joi = require('joi');
+const express = require('express');
+const app = express(); 
+const logger = require('./logger');
+
+app.use(express.json());
+
+app.use(logger);
+
+app.use(function(req, res, next){
+    console.log('Authenticating...');
+    next();
+})
+
+-- logger.js
+
+function log(req, res, next){
+    console.log('Logging...');
+    next();
+}
+
+module.exports = log;
