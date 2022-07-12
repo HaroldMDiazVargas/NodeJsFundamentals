@@ -1,0 +1,40 @@
+Third-party Middleware 
+    Couple of third-party Middleware we have in express => express.js.com-Resources-Middleware
+    Every Middleware function will impact the performance of our app, so it doesn't mean that we have to 
+    implemente every third-party Middleware.
+
+    - helmet
+     - This is a Middleware that is considered best practice
+     - This helps securre our apps by setting various HTTP headers
+
+    - morgan
+     - This another usefult Middleware function to log HTTP Requests by default in the console; but it can be 
+       configurated to write in a file
+     - when we call morgan() we need to specify:
+       - various formats e.g 'tiny' => see documentation
+    
+
+
+-- index.js
+const morgan = require('morgan');
+const helmet = require('helmet');
+const Joi = require('joi');
+const express = require('express');
+const app = express(); 
+const logger = require('./logger');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'))
+app.use(helmet());
+app.use(morgan('tiny'));
+
+app.use(logger);
+
+
+
+-- Terminal 
+
+Listening on port 3000...
+Logging...
+GET /api/courses 200 79 - 16.590 ms
