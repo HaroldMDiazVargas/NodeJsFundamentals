@@ -1,0 +1,93 @@
+Configuration
+    Storing the configuration settings for the app and overwriting these settings in each environment:
+     - Use a differente database in our development environment
+    
+    NodePackages for Managing Configuration:
+    There're various node packages for this:
+     - rc: This is the most popular but there a few issues but is a good option
+     - config: Is not very opular but it has a clean and elegant design and very easy to use
+    
+
+    Install config module:
+     - In terminal => npm i config
+
+    Config/ folder:
+     - In this empty folder we want to add some configuration files:
+       - default.json: JSON object to define the default configuration settings e.g "name": "Express App"
+       - development.json: Define the settings specific to the Development Environment; as part of this we 
+                           can:
+                           - Overwrite the settings that we define in "default.json"
+                           - Add additional settings; an can be complex object
+       - production.json: Similar to the development but all settings focused around the production
+       - ...
+    
+    Load config module:
+     - We can load using require() function => const config = require('config');
+
+    Using config object:
+     - With this we can easily config various settings for our app
+     - This config object has a method:
+       - .get(nameOfConfigProperty): we specify the name of the configuration property
+          e.g config.get('name')
+              config.get('mail.host')
+          - This method looks for various sourcers to find the value for the configuration property passed;
+            these sources can be:
+            - Configuration file => JSON file
+            - Environmnent Variable
+            - Command line argument (Look Documentation)
+    
+     - However we shouldn't store the App SECRETS in the configuration files:
+       - Don't store password
+       - Don't store database
+       - Don't store our mail server
+       ...
+       Because when we checking our source code to a repository; these secrets are visible to anyone who have 
+       access to the repository because all the configuration files are goona be in our repository; anyone 
+       will see these .json files!
+     
+    Deal with Secrets:
+     - We store them in Environment Variables :
+       - In console we define our own Environment Variables prefix(avoid clash) with appName:
+         e.g appName_EnvVariable=value
+             $env:app_password=1234
+       - In a new configuration file we can put all our custom Environment Variables:
+         - We MAP our Secrets Settings to the corresponding Environment Variables
+       - Then we read them using our config/ module in the index.js
+    
+
+
+-- index.js
+
+const morgan = require('morgan');
+const config = require('config');
+const helmet = require('helmet');
+const Joi = require('joi');
+const express = require('express');
+const app = express(); 
+const logger = require('./logger');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'))
+app.use(helmet());
+
+console.log(`Application Name: ` + config.get('name'));
+console.log(`Mail Server: ` + config.get('mail.host'));
+console.log(`Mail Password: `+ config.get('mail.password'));
+
+if(app.get('env') === 'development'){
+    app.use(morgan('tiny'));
+    console.log('Morgan enable');
+}
+
+app.use(logger);
+
+
+-- Terminal
+❯ $env:app_password=1234
+❯ nodemon .\index.js
+Application Name: My Express App - Development
+Mail Server: dev-mail-server
+Mail Password: 1234
+Morgan enable
+Listening on port 3000...
