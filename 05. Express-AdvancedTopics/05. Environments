@@ -1,0 +1,74 @@
+Environments
+    In a more complex-enterprise apps we need to know what Environment our code is runing at:
+     - Developer Environment
+     - Production Environment
+    Perhaps we want to enable or disable certain features based on the current Environment
+
+ 
+    
+    - Process Object
+      - This is a global object in Node that gives us access to the current process; this object has a property
+        called:
+        - .env: this gives us the Environment Variables:
+          - NODE_ENV: Standard Environment Variable that returns the Environment for this Node app; 
+                      if is not SET it returns undefined. Alternatively we can set it from the outside
+                      - Development
+                      - Testing
+                      - Staging
+                      - Production
+    
+    - Getting Current Environment
+      - Using the Process Object directly
+      - Using the app(express) object; that has a method:
+        - app.get(): We use to get various settings about this app; one of the setting is 'env'
+                     This method internally uses the Environment Variable NODE_ENV to detect the current 
+                     environment. However if the Environment Variable is not set; this will return 
+                     by default => Development
+    
+    - Enable morgan only DevEnv
+      - We just use IF clause to check the current environment in the app and according to this 
+        enable morgan only in Development Environment
+
+
+-- index.js
+
+const morgan = require('morgan');
+const helmet = require('helmet');
+const Joi = require('joi');
+const express = require('express');
+const app = express(); 
+const logger = require('./logger');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'))
+app.use(helmet());
+
+if(app.get('env') === 'development'){
+    app.use(morgan('tiny'));
+    console.log('Morgan enable');
+}
+
+app.use(logger);
+
+
+console.log(`NODE_ENV: ${process.env.NODE_ENV} `);
+console.log(`app: ${app.get('env')}`);
+
+
+-- terminal
+❯ nodemon .\index.js
+Morgan enable
+NODE_ENV: undefined
+app: development
+Listening on port 3000...
+
+
+-- terminal 
+❯ $env:NODE_ENV="production"
+❯ nodemon .\index.js
+NODE_ENV: production
+app: production
+Listening on port 3000...
+
+
