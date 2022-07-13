@@ -1,0 +1,5 @@
+Authentication 
+    Express doesn't have an opinion about Authentication because:
+     - Minimal lightweigh framework
+    
+    Authentication & Authorization is about securing our API endpoints!(see later)
