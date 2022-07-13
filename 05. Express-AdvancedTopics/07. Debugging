@@ -1,0 +1,71 @@
+Debugging
+    We use console.log() all the time to debugging; but this approach when we are done:
+    - we delete it and we will have to write again if we need again
+    - we may comment it out and we will have to uncomment if we need again
+    
+    Debug Node Package:
+     - A better way to log messages for a purpose of debugging
+     - With this package we replace all the console.log() statements with a call to a Debug Function and then 
+       we can use an Environment Varible to:
+        - enable or disable debugging
+     - We can also determinate the level of debugging information we want to see:
+       - If we're working with a database problem, may we only want to see the debugging information to the 
+         database
+     - Using these we dont have everytime to modify/uncomment all these console.log() statements
+
+    
+    Install Debug Node Package:
+     - In console => npm i debug
+    
+    Load Debug Node Package:
+     - We use require() function => require('debug')
+       - This returns a Function and we call this and give it an argument:
+         - argument: Is an arbritary namespace that we define for debugging e,g 'app:startup'
+                      const startupDebugger = require('debug')('app:startup')
+         So in conclusion, we get a Function for writting debugging messages in the namespace that we defined!
+    
+     - We can have another Debugger for debugging database related messages
+       e.g const dbDebugger = require('debug')('app:db')
+    
+    
+    Using startupDebugger function:
+     - Once we've loaded the package and define the namespace we can use the debugger to replace console.log()
+       e.g replace console.log('Morgan enabled...'); => for => startupDebugger('Morgan enabled...');
+
+    Define an Environment Variable:
+     - To determinate what kind of debuggin information(level of debugging) we want to see in the console we just define an 
+       Environment Variable and set it to:
+       - Namespace or multiple namespaces that we want to see the debugging messages
+         e.g $env:DEBUG=app:startup
+             $env:DEBUG=app:startup, app:db
+             $env:DEBUG=app:*                     => Use wildcard(*) to see all debugging messages for all namespaces
+
+
+    In terminal:
+     - We can see that for each namespace debugging messages there're particular color; so is very easy to distinguish
+       these debugging messages.
+    
+
+    In real world:
+     - We may not have multiple debugger functions in the same file; instead we can have one debugger in one file and 
+       tht's the same for other files. So we can change the name like 'startupDebugger' to just 'debug'
+
+    
+-- terminal
+❯ $env:DEBUG="app:startup,app:db"
+❯ nodemon .\index.js
+Application Name: My Express App - Development
+Mail Server: dev-mail-server
+Mail Password: 1234
+  app:startup Morgan enabled... +0ms
+  app:db Connected to the database... +0ms
+Listening on port 3000...
+
+
+-- terminal short-way
+❯ $env:DEBUG="app:startup"; nodemon index.js
+Application Name: My Express App - Development
+Mail Server: dev-mail-server
+Mail Password: 1234
+  app:startup Morgan enabled... +0ms
+Listening on port 3000...
