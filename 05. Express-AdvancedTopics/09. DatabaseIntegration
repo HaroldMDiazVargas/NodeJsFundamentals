@@ -1,0 +1,24 @@
+Database Integration
+    Options of Database Integration when we use Node and Express => express.js.com/guide/database-integration
+     - We can see various Database drivers that are available for us to use:
+       - Cassandra
+       - Couchbase
+       - MySQL
+       - MongoDB
+       - Oracle
+       - PostgreSQL
+       - SQL Server
+       - SQLite
+       - ElasticSearch
+
+    For each of these options we can see some sample code:
+     - Install the driver for working with the specific database
+     - Load drive using require()
+     - Simple API to connect to the database; an access various collections and so on!
+    
+    MongoDB:
+     - in canse of 'mongodb' there's another package called:
+       -'mongoose': Built on top of 'mongodb' package. So instead of using the 'mongodb' driver directly
+                    we use mongoose:
+                    - it gives us a simpler API
+                    
