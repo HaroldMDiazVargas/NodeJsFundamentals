@@ -1,0 +1,43 @@
+Patterns for Dealing with Asynchronous Code
+
+    We are using setTimeout() function for one reason:
+     - We're trying to simulate a call to the database; because this call in the real world can takes a certain time 
+       so when we want to get some information of the database we don't get it inmmedately.
+    
+    If we try to create a function to simulate this scenario:
+     - we will not be able to get the data in a variable/constant; because if we need it for some reason the data 
+       will not be until the time that the database call takes! So we will get "undefined" in the constant.
+       This is because the 'function' alone is call Synchronous way because when the control gets over this function 
+       it will call; but inside of this function we have => setTimeout() that's a Async Function; so this function 
+       evenly is inside a Sync Function; it will be SCHEDULE and the rest code of the  Sync Function will be executed!
+    
+
+    Patterns:
+     - There're three patterns to deal with Aync Code; because we need to write these in a Aync Code way in order to 
+       access the 'object' that returns the 'database' in the main program:
+       1. Callbacks
+       2. Promises
+       3. Async/await: Sintactical sugar over promises
+
+-- index.js
+
+console.log('Before');
+const user = getUser(1);
+console.log(user);
+console.log('After');
+
+function getUser(id){
+    setTimeout( () => {
+        console.log('Reading a user from a database...');
+        return {id: id, name: "Harold"};
+    }, 2000);
+    
+}
+
+
+-- terminal
+❯ node .\index.js
+Before
+undefined
+After
+Reading a user from a database...
