@@ -1,0 +1,35 @@
+Synchronous vs Asynchronous Code
+
+    Synchronous/Blocking program:
+     - When the 1st line executes the program is blocking
+     - The 2nd line HAS TO WAIT until the 1st line finishes execution
+    
+    Asynchronous/Non-blocking program:
+     - setTimeout() is an example of Asynchronous/Non-blocking function; when we call this function :
+       - Schedule attach to be perform in the future at a specific seconds after
+         The function doesn't wait, doesn't block; just schedule attached; and the control(program) continous to the 
+         next line of code. So the program is non-blocking
+         
+     
+     - Asynchronous doesn't mean concurrent or multi thread; just one thread.
+     - In a Node program whenever we're dealing with operations that involve Dist or Network access; we're dealing with 
+       Asynchronous Code.
+     - So we need to write Asynchronous Code:
+       - Clen
+       - Maintainable
+    
+
+-- index.js 
+
+console.log('Before');
+setTimeout( () => {
+    console.log('Reading a user from a database...');
+}, 2000);
+console.log('After');
+
+
+-- terminal
+❯ node .\index.js
+Before
+After
+Reading a user from a database...
