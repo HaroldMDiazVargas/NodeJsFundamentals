@@ -1,0 +1,71 @@
+Callback Hell
+    With Asyncronous Code Implementation we will ended getting a:
+    - Nested Structure: Because the callbacks we will have a deeply Nested Structure, one callback nested to another 
+                        and that to another callback and so on. This because we will get the result to the Async function once
+                        is ready, so then we can use in a new callback because that information of the initial callback 
+                        was not accessible; and again this repeat:
+                         e.g  getUserInformation
+                              then get the repositories of that user 
+                                   then get the commit for a particular repository of the user
+                                        ...
+    
+    In a real world app this can look worse! CALLBACK HELL or Chrimas Tree Problem
+
+    Named Function over Anonymus Function:
+     - This is the tecnhique we're going to use to solve the problem of Callback Hell; replacing the Anonymus function
+       with Named function:
+       - Anonymus Function: Is a function that doesn't have a name; this means the arrow function that is passed as 
+                            the 2nd argument of the functions we've created to make Asyncronous program. 
+
+     - With this tecnhique we can flatten the structure
+     - Steps:
+       1. We start with the deepest level; and the steps are the same. We make a conventional function and we make 
+         the same logic that is in the arrow function(2nd argument). This new function is a Named Function
+       2. We pass a 'reference' of the Named Function to replace the Anonymus Function. Remember is just a reference 
+          is not the call of the function
+       3. Repeat the steps again: Create Named Function and Replace as reference over the Anonymus Function for all the 
+          Asyncronous call functions in the Callback Hell
+        
+       
+-- index.js 
+
+console.log('Before');
+// getUser(1, (user) => {
+//     console.log(user);
+
+    // getRepositories(user.gitHubUsername, (repos)=>{
+    //     console.log(repos);
+    // })
+
+// });
+
+
+getUser(1, getRepositories);    
+console.log('After');
+
+
+
+function getRepositories(user){
+    console.log(user);
+    getRepositories(user.gitHubUsername, displayRepos);
+}
+function displayRepos(repos){
+    console.log(repos);
+}
+
+
+
+function getUser(id, callback){
+    setTimeout( () => {
+        console.log('Reading a user from a database...');
+        callback({id: id, gitHubUsername: "Harold"});
+    }, 2000);   
+}
+
+
+function getRepositories(username, callback){
+    setTimeout( () => {
+        console.log('Calling GitHub API..');
+        callback(['repo1', 'repo2', 'repo3']);
+    }, 2000);
+}
