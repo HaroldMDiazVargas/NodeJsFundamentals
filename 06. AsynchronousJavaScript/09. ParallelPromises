@@ -1,0 +1,73 @@
+Running Promises in Parallel
+    Sometimes we may want to run a few promises in parallel and when all them complete; we want to do something after!
+     e.g call different APIs like  => facebook API and Twitter API
+         then when both ends       => send something to the client
+    
+
+    Creating promises:
+     - We just need to create the promises like a normal promise
+    
+    Using static .all() method:
+     - This is a static method of the Promise class to run a few promises almost in parallel
+       This method takes
+        - an array: This array corresponds to the list of promises we want to run in 'parallel'
+       This method returns:
+        - a promise: This promise will be resolve once all the promises in the array are completed; this means 
+                     when all Asyncronohous operations ends.
+       Like this returns a promise; so we can use:
+        - then() property: To use the result when all promises are resolve() without any problems
+        - catch property: To display the error; and this final promise is rejected when any of all the promises is rejected
+    
+    Single thread:
+     - Here we dont have concurrency(multi-threading); we are dealing with just one thread. But this single thread is 
+       kicking off multiple Asyncronohous operations almost at the same time.
+       But what really happens is that every Promise doesn't wait the other promise to have the result; when the promise 
+       is executed but while the result is ready the thread is control over the next promise. So the promises don't wait 
+       for the other promises to be resolve!
+
+    Using static .race() method:
+     - This is a static method of the Promise class that equal of .all() method; we can kick off multiple 
+       Asyncronohous operations; but allows us to:
+       - As soon as one of these promises is Fullfill(result) we want to do something with this result; this means we
+         don't wait for all of them to complete
+     - That's why this method is called race() because the final promise is going to have the result of only 
+       the 1st promise that is completed!
+
+
+
+-- promise-api.js 
+
+const p1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('Async operation 1...');
+        resolve(1);
+    },2000)
+});
+
+
+const p2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('Async operation 2...');
+        resolve(2);
+    },2000)
+});
+
+Promise.all([p1, p2])                               => .all for .race
+ .then(result => console.log(result))
+ .catch(err => console.log('Error ', err.message ));
+
+
+
+
+-- terminal with all()
+❯ node .\promise-api.js
+Async operation 1...
+Async operation 2...
+[ 1, 2 ]
+
+
+-- terminal with race()
+❯ node .\promise-api.js
+Async operation 1...
+1
+Async operation 2...
