@@ -1,0 +1,99 @@
+Async and Await
+    New feature in JavaScript that helps us to write Asynchronous code like Synchronous code:
+     - easier to read
+     - easier to understand
+
+
+    How it works:
+     - Anytime we call a function that returns a promise; we can AWAIT the result of that function and then get 
+       the actual result just like calling a Synchronous function. So await means that if the control thread
+       puts over there, it will release until the result is ready. So for this we use:
+       - await operator: we put this operator when we call the Asynchronous function
+                        e.g const name = await functionCall(params);
+     - Whenever we use 'await' operator in a function call; we need to decorate a wrapper function with:
+       - async modifier: JavaScript Engines have the requirement of decorate a function with async modifier 
+                         and inside that function put all the function/s call/s that use the 'await' operator
+                         e.g async function nameFunc(){
+                            ... await func1();
+                            ... await func2();
+                            ...
+                         }
+     - Finally we call the function with 'async' modifier. This function return a Promise of void. This is because 
+       'async' and 'await' are built on top of promises:
+        - There're sintactical sugar in the language that allow us to make Asynchronous code that looks Synchronous
+          internally when JavaScript executes the code of 'async' and 'await' is going to have code very similar 
+          to the 'consuming of a promise' => chain of then()
+    
+    Try/Catch block:
+     - We don't have .catch() method when we consume a conventional promise. So we use try/catch block
+     - We wrap all code that is inside async function in the try
+     - We display error in the catch block:
+       - catch(ErroObject){}
+       This catch takes an error object and we can display in the code block
+
+
+
+
+-- index.js
+console.log('Before');
+
+async function displayCommits(){
+
+    try{
+        const user = await getUser(1);
+        const repos = await getRepositories(user.gitHubUsername);
+        const commits = await getCommits(repos[0]);
+        console.log(commits);
+    }   
+    catch(err){
+        console.log('Error ', err.message);
+    }
+};
+  
+displayCommits();
+
+
+console.log('After');
+
+
+
+
+function getUser(id){
+    return new Promise((resolve, reject) => {
+        // Kick off some async work
+        setTimeout( () => {
+            console.log('Reading a user from a database...');
+            resolve({id: id, gitHubUsername: "Harold"});
+        }, 2000);   
+    });
+
+}
+
+
+function getRepositories(username){
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            console.log('Calling GitHub API..');
+            resolve(['repo1', 'repo2', 'repo3']);
+        }, 2000);
+    });
+}
+
+function getCommits(repo){
+    return new Promise((resolve, reject) => {
+        setTimeout( () =>{
+            console.log('Calling GitHub API...')
+            resolve(['commit']);
+        },2000 );
+    })
+}
+
+-- terminal 
+
+❯ node .\index.js
+Before
+After
+Reading a user from a database...
+Calling GitHub API..
+Calling GitHub API...
+[ 'commit' ]
