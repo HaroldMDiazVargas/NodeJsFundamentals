@@ -1,0 +1,35 @@
+Creating Settled Promises
+    Let's explore the API of promise object in JavaScript in more detail!
+
+    Useful Promise:
+     - Sometimes we want to create a promise that is already result. This is very useful when writting unit test because 
+       we want to simulate an scenariou when Asynchronous operation completes sucessfully!
+    
+    Promise class:
+     - This API/class has static methods called:
+       - .resolve(): This return a promise that is already result; we can pass:
+                     - value: This is optional; and can be even an object
+       - .reject(): This return a promise that is rejected; we can pass:
+                     - error: This is optional; and we can pass an Error Object
+                              and this Error Object inclues the Call Stack( erro detail)
+
+
+-- promise-api.js
+const p1 = Promise.resolve({ id:1});
+p1.then(result => console.log(result));
+
+
+const p2 = Promise.reject(new Error('message'));
+p2.catch(err => console.log(err));
+
+-- terminal 
+❯ node .\promise-api.js
+{ id: 1 }
+Error: message
+    at Object.<anonymous> (C:\Users\USUARIO\Desktop\H\Apps\async-demo\promise-api.js:6:27)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47
