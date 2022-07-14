@@ -1,0 +1,78 @@
+Consuming Promises
+    Now that we've changes the Function to return a promise; is time to consume all these promises and solve the 
+    problem of Callback Hell.
+
+    Consuming:
+     - We call just the funcion and pass the argument e.g id of the user; this function like we know is going to return 
+       a promise object.
+     - This promise object has the properties:
+       - then 
+       - catch
+       So we use then to work with the value returned from the Asyncronous operation; but here comes the interesting part:
+       - In the then() if we call another Asyncronous Operation (we have another promise object); this then()
+         will return a promise:
+         - So we don't need to use then() inside of another then(). Instead we use at the same level of indent!
+     - So we just call the promise and like then() returns a promise we use again then() until we don't have 
+       more Asyncronous operations in the Callback Hell
+     - Finally we can catch() error if something goes wrong with ANY of the promises and display a message
+       So we have a single Error Handler to handle the error that comes from any of these Asyncronous operations
+
+
+-- index.js 
+
+console.log('Before');
+
+
+getUser(1)
+  .then(user => getRepositories(user))
+  .then(repos => getCommits(repos[0]))
+  .then(commits => console.log(commits))
+  .catch(err => console.log('Erro '+err.message));
+  
+
+console.log('After');
+
+
+
+
+function getUser(id){
+    return new Promise((resolve, reject) => {
+        // Kick off some async work
+        setTimeout( () => {
+            console.log('Reading a user from a database...');
+            resolve({id: id, gitHubUsername: "Harold"});
+        }, 2000);   
+    });
+
+}
+
+
+function getRepositories(username){
+    return new Promise((resolve, reject) => {
+        setTimeout( () => {
+            console.log('Calling GitHub API..');
+            resolve(['repo1', 'repo2', 'repo3']);
+        }, 2000);
+    });
+}
+
+function getCommits(repo){
+    return new Promise((resolve, reject) => {
+        setTimeout( () =>{
+            console.log('Calling GitHub API...')
+            resolve(['commit']);
+        },2000 );
+    })
+}
+
+
+-- callback hell(equivalent call functions)
+getUser(1, (user) => {
+    getRepositories(user.gitHubUsername, (repos)=>{
+        getCommits(repos[0], (commits) => {
+            console.log(commits);
+        })
+    })
+});
+
+
