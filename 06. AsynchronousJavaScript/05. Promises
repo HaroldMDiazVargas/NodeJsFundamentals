@@ -1,0 +1,81 @@
+Promises
+    JavaScript promises are extremely powerful when it comes to dealing with Asynchronous Code
+
+    Promise
+     - A promise is an object that holds the eventual result of an asynchronous operation.
+     - So when an asynchronous operation completes, it can result :
+       - in a value
+       - or in an error
+      So a promise basically Promises that gives us the result of an asynchronous operation.
+      - This object can be in one of three states:
+        - Pending state: This will be the state of the promise initially when we create a promise object. At this point
+                         it will kick off(begin) some asynchronous operation. 
+                         When the result is ready; a promise can either be:
+                          - Fulfille or Result: Means that the asynchronous operation completed successfully; here we'll have 
+                                                a value
+                          - Rejected state: When something was wrong during the execution of the asynchronous operation; in this
+                                            case we are going to have an error.
+    
+    Promises in action:
+     - We create a new promise object by instantiate the Promise class using the constructor:
+        const p = new Promise()
+        - This constructor takes an argument:
+          - Function: We pass as argument a function that takes:
+                      - resolve: parameter but basically is a function. We use when the asynchronous operation ends to send 
+                                 a value to the consumer of the promise object
+                      - reject: parameter but basically is a function. We use when the asynchronous operation ends to send 
+                                 a error to the consumer of the promise object if somethind went wrong.
+                      In the body of this function:
+                      - kick off: We're going to kick off some asynchronous work
+                                  e.g access a database
+                                      call a web server
+                                      start a timer
+                                      ...
+                      - when the asynchronous operation completes; we should either have:
+                        - value: If there's a value we want to return it to the consumer of this promise.
+                                 for this we use 'resolve' function and we pass a value here!
+                        - or an error: If there's something wrong we want to return an error to the consumer of this promise.
+                                       for this we use 'reject' function and we pass an Error Message. As a best practice 
+                                       is better to pass:
+                                       - Error Object: Use this instead of simple 'stringMessage'. An this error message we pass 
+                                                       to the Error Object will be store in a property called 'message'
+     
+
+    Consume the promise:
+     - We have two methods of the promise object:
+       - then(): For getting the result of our asynchronous operation. We use this an as argument:
+                 - function: this arrow function takes:
+                             - result: Is the result that is sent by resolve() when asynchronous operation ends(means there's value)
+                             In the body of this function:
+                              - We code logic for what we want to do with the 'result'
+       - catch(): For catching any errors. As argument we pass:
+                 - function: this arrow function takes:
+                             - err: Is the error that is sent by reject() when asynchronous operation ends(means there was something wrong)
+                             In the body of this function:
+                              - We can display the 'err.message' property that is stored for the Error Object in the promise
+
+
+
+-- promise.js
+
+const p = new Promise( (resolve, reject) => {
+    // Kick off some async work
+    setTimeout(() => {
+        reject(new Error('message'));
+    },2000 )
+} );
+
+
+p
+  .then( result => console.log('Result', result));
+  .catch(err => console.log('Error', err.message));
+
+
+
+-- terminal
+❯ node .\promise.js
+Result 1
+
+
+❯ node .\promise.js
+Error message
