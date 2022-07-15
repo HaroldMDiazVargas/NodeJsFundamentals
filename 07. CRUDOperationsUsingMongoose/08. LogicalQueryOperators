@@ -1,0 +1,52 @@
+Logical Query Operators
+    We have two logical Operators:
+    - OR
+    - AND
+    For these both Operators we need to pass an array of filter objects
+
+    OR - AND:
+     - To use these methods, first we need to call the find() method; right after this we use any of these 
+       Logical Operators
+     - For both Operator we pass:
+       - Array: This array corresponds to an array of:
+                - filter objects: each object has key:value paris; where:
+                                  - key: property 
+                                  - value: the value of which we want to filter 
+                                  So every object is separate; this means these are the operands where we apply
+                                  the Logical Operation
+     - e.g .or([ {property1: value1}, {property2: value2}])
+           .and([ {property1: value1}, {property2: value2}])
+    
+
+    e.x Get the list of Documents(in this case courses) where the author is Harold or any course that isPublished!
+        .or([ {author: 'Harold'}, {isPublished: true}])
+
+    Notes:
+        The AND Operator is tecnhically same that pass in the .find() method; but sometime we can see a better place 
+        to use this operator!
+
+
+
+
+-- index.js
+
+...
+...
+
+async function getCourses(){
+    const courses = await Course.findOne()
+        // .find({author: 'Harold', isPublished: true})
+        
+        // .find({price: { $gte: 10, $let:20 }})
+        // .find({price: { $in: [10, 15, 20] } })
+        find()
+        .or([ {author: 'Harold'}, {isPublished: true}])
+        .limit(4)
+        .sort({name:1})
+        .select({name:1, tags:1});
+    console.log(courses);
+
+}
+
+// createCourse();
+getCourses();
