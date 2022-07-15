@@ -1,0 +1,52 @@
+Models
+    We need to compile the Schema into a Model to create a class. This class:
+     - Allows us to create new Documents in a Collection keeping the shape of the Schema we defined early
+
+    
+    Creating Class to create new Documents:
+     - We use mongoose.model() method to create the class
+       - This method takes:
+         - Collection name in singular: Singular name of the collection that the Model is for
+                                        e.g Collection is 'Courses'; so here we put 'Course'
+         - Schema: The schame that defines the shape of Documents in this collection
+       - This method returns:
+         - Class: Used to create objects !
+
+    
+    Using the Class:
+     - We use 'new' keyword to instantiate. In the constructor we pass:
+       - Object: This object we pass the properties and the values; this object maps to a Document in a MongoDB database
+    
+
+    Notes:
+     - We don't have something like an Array of Strings in SQL database. If we want to Model this kind of structure 
+       we will need two databases we want to have the many-to-many combinations and a Link Table(table between these two)
+       that make the combinations using Foreign Keys! This is why we define NoSQL database like Schemaless!
+    
+-- index.js
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean
+});
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+const course = new Course({
+    name: 'Angular.js Course',
+    author: 'Harold',
+    tags: ['angular', 'frontend'],
+    isPublished: true
+});
