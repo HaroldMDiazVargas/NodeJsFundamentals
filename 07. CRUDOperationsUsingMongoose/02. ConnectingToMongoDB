@@ -1,0 +1,38 @@
+Connecting to MongoDB
+    
+    Mongoose Package:
+     - We need to install this Node package in our project
+     - This gives a simple API with a MongoDB dabata
+    
+    Connect to MongoDB:
+     - First we need to load mongoose module using require() function; this returns an object
+     - This object has a method:
+       - connect(): Method used to connect with MongoDB
+                    This method takes:
+                    - ConnectionString: This is the reference the MongoDB server + database. We may have:
+                                        -'mongodb://localhost/playground' => reference MogoDB we install in our machine
+                                                                             and MongoDB automatics create this database first
+                                                                             time we wrtie something!
+                                        - we can have another ConnectionString for our production Environment.
+                                          We can manage these various configuration settings for different Environments
+                                          using 'config' package!
+                    This method returns:
+                    - a promise: So we can call the methods:
+                                - then(): arrow function when the connect is fullfill
+                                - catch(): we get an Error Object and we can display on console
+
+
+
+-- index.js
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+
+
+-- terminal
+❯ node .\index.js
+Connected to MongoDB...
