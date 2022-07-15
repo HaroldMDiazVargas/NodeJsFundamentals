@@ -1,0 +1,51 @@
+Schemas
+    We create a Schema to define the shape of Documents within a Collection in MongoDB.
+    
+    In a MongoDB database:
+     - Collection: Like a table in a SQL database; in a Collection we have:
+                   - Documents: A document is similar to a row in a SQL database.
+                                Each document is a container of key:value pairs:
+                                - key:value pair: We can have multiple pairs
+
+    In mongoose:
+     - Schema: This concept is specific to mongoose, is not part of MongoDB.
+               We use to define the shape of Documents in a MongoDB Collection:
+               - Properties: Define what are the properties we have in a document
+               - Type: Define data type of these properties and even => Default values!
+    
+
+    Create a Schema:
+     - we use mongoose.Schema class to instantiate a new object of this class. To this Constructor we pass:
+       - Object: Here in this object we specify the key:value pairs that we want to have in the Document
+                 where:
+                 - keys: are the name of the properties
+                 - values: correspond to the types of these properties. The list of Schema Types we have:
+                           - String
+                           - Number
+                           - Date
+                           - Buffer: For storing binary data
+                           - Boolean
+                           - ObjectID: Use for assign unique identifiers
+                           - Array
+                          We also can assign to the type and property a default value; for this we use an object:
+                          This object has two properties:
+                          - type: Corresponds to the type of the property
+                          - default: Define the defautl value; e.g 1, "a", [...], Date.now, ...
+
+-- index.js 
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean
+});
