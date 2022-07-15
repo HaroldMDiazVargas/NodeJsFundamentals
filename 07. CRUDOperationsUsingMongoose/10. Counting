@@ -1,0 +1,30 @@
+Counting
+    Sometimes we want to get the number(amount) of Documents instead the actual Documents
+
+    .count() over select():
+     - We don't need the selecr() method; we replace it by the count() and this return:
+       - count of Documents that match the criteria of the .find(), or(), and()!
+    
+-- index.js
+
+...
+...
+
+async function getCourses(){
+    const courses = await Course.findOne()
+        .find()
+        .and([ {author: 'Harold'}, {name: 'Node.js Course'}])
+        .limit(10)
+        .sort({name:1})
+        // .select({name:1, tags:1});
+        .count();
+        console.log(courses);
+
+}
+
+getCourses();
+
+-- terminal 
+❯ node .\index.js
+Connected to MongoDB...
+1
