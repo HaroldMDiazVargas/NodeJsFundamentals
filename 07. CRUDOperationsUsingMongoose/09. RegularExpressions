@@ -1,0 +1,33 @@
+Regular Expressions
+    We use these Expressions to have more control over our Filtering Strings!
+
+    Using Regular Expressions
+     - To pass a Regular Expression instead of pass an String we add:
+        /pattern/
+     
+     - ^: Represents a String that starts with something e.g /^Harold/
+          Doesn't matter what are after
+     - $: Represents a String that ends with something e.g /Diaz$/
+          Doesn't matter how it starts
+     - i: This is append at the end to indicates that we want to make the Regular Expression INSENSITIVE 
+          e.g /pattern/i
+     - .*: This means we can have 0 or more characters depending where we put this pattern
+            e.g /.*Harold.*/
+    
+    If we want to know more about this read:
+        Tutorial about JavaScrip Regular Expressions
+
+
+
+async function getCourses(){
+    const courses = await Course.findOne()
+        .find({author: '^Harold', isPublished: true})
+        .limit(4)
+        .sort({name:1})
+        .select({name:1, tags:1});
+    console.log(courses);
+
+}
+
+// createCourse();
+getCourses();
