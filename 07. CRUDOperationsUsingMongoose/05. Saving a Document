@@ -1,0 +1,65 @@
+Saving a Document
+    With our Schema compiled into a Model. We use the class obtained to play with the Collection and 
+    save Documents inside it.
+
+    save() method:
+     - We use the save() method of the object that define a new Document has.
+     - This method is an asyncronous operation; so we can use 'awai't operator. But like we know is required a function 
+       with 'async' modifier
+     - This method returns:
+       - The Document that is saved in the corresponding Collection of the database; and includes:
+         - _id: which is an unique identifier that MongoDB assigned to the new document saved
+         - __v: which is a version that MongoDB determinates for the Document
+
+
+    Notes:
+        Unlike SQL, we just create a Document and store it in MongoDB database
+
+-- index.js
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean
+});
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        author: 'Harold',
+        tags: ['angular', 'frontend'],
+        isPublished: true
+    });
+    
+    const result = await course.save();
+    console.log(result);
+}
+
+createCourse();
+
+
+-- terminal
+❯ node .\index.js
+Connected to MongoDB...
+{
+  name: 'Angular.js Course',
+  author: 'Harold',
+  tags: [ 'angular', 'frontend' ],
+  isPublished: true,
+  _id: new ObjectId("62d18953762a4863acd365df"),
+  date: 2022-07-15T15:35:47.975Z,
+  __v: 0
+}
