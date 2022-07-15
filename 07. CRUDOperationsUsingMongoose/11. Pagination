@@ -1,0 +1,47 @@
+Pagination
+    There's a method that goes stick(uses very common together) with the limit():
+     - skip(): We use this to implemente Pagination
+               We 'skip' all the Documents in the previous page, the Formula is:
+                    (pageNumber - 1)* pageSize
+               This means that with skip() method we goes skipping the Documents according to the pageNumber 
+               that user is!
+               e.g pageNumber = 2 (This means the actual page)
+                   pageSize = 10 (This means the number of Documents we want to display per page)
+                   
+               So in each page we display 10 Documents:
+                - 1st Page: We skip 0 Documents and we display 10 Documents (the initial 10)
+                - 2nd Page: We skip 10 Documents and we display 10 Documents (the next 10)
+                - 3rd Page: We skip 20 Documents and we display 10 Documents (the next 10)
+                ....
+
+
+    
+
+    Notes:
+        The values of pageNumber and pageSize are passed as Query String Parameters to our RESTful APIs:
+        - These are parameters that we add in the URL after question mark
+        - These parameters are used to provide additional data to our backend services
+        - We use these parameters for anything that is optional
+         e.g /api/courses?pageNumber=2&pageSize=10
+
+        We assume pageNumber starts with 1; is not the page index
+
+
+
+
+-- index.js
+...
+...
+async function getCourses(){
+    const courses = await Course.findOne()
+        .find({author: 'Harold', isPublished: true})
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort({name:1})
+        .select({name:1, tags:1});
+
+        console.log(courses);
+
+}
+
+getCourses();
