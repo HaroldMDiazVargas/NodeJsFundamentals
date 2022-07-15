@@ -1,0 +1,89 @@
+Querying/Retrieve Documents
+    The class we obtained from compile Schema into a Model has a bunch of methods for queryng documents:
+     - .find(): Get list of all Documents
+     - .findById()
+     - .findOne(): Returns a Single Document
+    These methods return:
+     - DocumentQuery object: Is kind like a promise; so it has:
+                            - then()
+                            So we can just use 'await' operator over this call function and wrap inside function with 
+                            'async' modifier
+
+    find() method:
+     - This returns a DocumentQuery object which has the list of all Documents; optional this method takes:
+       - filter: We can pass one or more filters to get the list by a given condition
+                 e.g {author: 'Harold'} => Return all Documents, in that case courses with author match with Harold
+                 e.g {author: 'Harold', isPublished: true}
+     - We also can customize the DocumentQuery; after the call of this method we can apply:
+       - .limit(x): limit the number of Documents; e.g limit(10)
+       - .sort({}): sort the Documents; we pass an object to add one or more key:value pairs for sorting:
+                    - 1: indicates ASC order
+                    - -1: indicates DESC order
+                    e.g .sort({ name: 1})
+       - .select(): select the properties that we want to be returned for each Document
+                    e.g .select({ name:1, tags:1 })
+    
+-- index.js 
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean
+});
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        author: 'Harold',
+        tags: ['angular', 'frontend'],
+        isPublished: true
+    });
+    
+    const result = await course.save();
+    console.log(result);
+}
+
+async function getCourses(){
+    const courses = await Course.findOne()
+        .find({author: 'Harold', isPublished: true})
+        .limit(4)
+        .sort({name:1})
+        .select({name:1, tags:1});
+    console.log(courses);
+
+}
+
+// createCourse();
+getCourses();
+
+
+
+-- terminal
+
+❯ node .\index.js
+Connected to MongoDB...
+[
+  {
+    _id: new ObjectId("62d16d48d2578a6ca8987908"),
+    name: 'Angular.js Course',
+    tags: [ 'angular', 'frontend' ]
+  },
+  {
+    _id: new ObjectId("62d0d5465b03049d407c1678"),
+    name: 'Node.js Course',
+    tags: [ 'node', 'backend' ]
+  }
+]
