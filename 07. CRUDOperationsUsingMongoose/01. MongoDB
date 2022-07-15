@@ -1,0 +1,43 @@
+Introduction MongoDB
+    We don't save data in the memory because when server restarts; all the data we're going to lose.
+    For this we need to save data in a database
+
+    MongoDB => mongodb.com
+     - Very popular DBMs 
+     - Quite often used in apps with Node and Express
+     - Is a document database or also called NoSQL database; different from traditional databases(SQL) like SQL server, MySQL.
+       In MongoDB we dont have the concepts of:
+       - tables, schemas, design, views, records, columns, ...
+     - In MongoDB we simply store our JSON objects/collections in there
+     - When querying our data; we get JSON objects out of MongoDB and we can simply return that objects back to the client
+       so there isn't Transformation
+    
+    Installation:
+     - In the web page click over Product => Community Edition => Comunity Server
+     - Once download the .msi file; gives us a simple installer:
+       - next
+       - accept License Agreement; next
+       - Complete Installation
+       - Install MongoDB as a service
+       - Then in mogodb.com look for installer MongoDB Compass
+       - Also in mongodb.com look for installer MongoDB Shell: mongosh
+         - Unzip the file and all the content in bin/ folder paste in the PATH of the database server
+       - The PATH of our MongoDB server is C:\Program Files\MongoDB\Server\5.0\bin
+         here we have:
+         - mongod: means mongo diamond which is a service that runs in the background and is basically our 
+                   MongoDB server
+       - Copy the PATH and goes to:
+         - Advance system settings
+         - Click on Environment Variables
+         - Select PATH of the list of System Variables and click on Edit
+         - Click on New and paste the PATH => OK!
+
+     - Finally creates a new folder:  ❯ mkdir C:\data\db
+
+    Connect to MongoDB server:
+     - run => mongod
+     - Open MongoDB compass and connecte to port 27017(default config)
+       here we can see that we have three database:
+       - admin
+       - config 
+       - local
