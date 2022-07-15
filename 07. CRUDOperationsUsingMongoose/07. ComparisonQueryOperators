@@ -1,0 +1,76 @@
+Comparison Query Operators
+    In MongoDB we have a bunch of Operators for comparing values. These are standard operators that are also 
+    available in mongoose(which is on top of MongoDB driver).
+
+    Comparison Operators:
+     - eq (equal)
+     - ne (not equal)
+     - gt (greater than)
+     - gte (greater than or equal to)
+     - lt (less than)
+     - lte (less than or equal to)
+     - in (for a list of values)
+     - nin (not in)
+    
+    Using Comparison Operators
+     - To express the concept of any of these operators; we must create an object that contain this concept
+       - object: this object will contain one or more key:value pairs:
+                - key: represent the Comparison Operator prefixing it with '$' to indicate as an operator $operator
+                       e.g $gt
+                           $lt
+                - value: represent the value target used in the Comparison. This value can be an array if we 
+                         use $in operator. Because in operator compared multiple values
+     - So we use this object in the filters functions:
+        e.g find({ property1: { $operator1: value1, $operator2: value2 }})      => to define a range 
+            find({ price: { $gt: 10} })                                         => get only the Documents that matches this condition
+            find({price: { $in: [10, 15, 20] } })                               => get Documents which price is 10 or either 15 or 20 dollars
+
+
+-- index.js
+
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean
+});
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        author: 'Harold',
+        tags: ['angular', 'frontend'],
+        isPublished: true
+    });
+    
+    const result = await course.save();
+    console.log(result);
+}
+
+async function getCourses(){
+    const courses = await Course.findOne()
+        // .find({author: 'Harold', isPublished: true})
+        // .find({price: { $gte: 10, $let:20 }})
+        .find({price: { $in: [10, 15, 20] } })
+        .limit(4)
+        .sort({name:1})
+        .select({name:1, tags:1});
+    console.log(courses);
+
+}
+
+// createCourse();
+getCourses();
