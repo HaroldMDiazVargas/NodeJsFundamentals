@@ -1,0 +1,67 @@
+Updating a Document - Query First
+    There're basically two ways to update the Document in MongoDB:
+     - Query First:
+       - Find the Document using findByID()
+       - Modify its properties
+       - Call the save() method
+
+     - Update First:
+      - Go to the database and update directly
+      - And we can optionally: Get the updated Document as well
+
+    
+    Query First approach:
+     - The findById() takes a valid id; otherwise we just returns without update it.
+       Like this method returns a promise we await!
+     - To modify the properties we have two choices:
+       - using dot notation:
+         - DocumentObject.property1 = newValue
+         - DocumentObject.property2 = newValue
+         - DocumentObject.property3 = newValue
+         - ...
+       - Using .set() method:
+         - we create new Object and pass:
+            - keys: represent the properties names
+            - values: represent the new values 
+      - Finally we call the .save() method the same way when we use it for creating a new Document
+    
+
+
+-- index.js
+
+...
+...
+
+async function updateCourse(id) { 
+    const course = await Course.findById(id)
+    if (!course) return;
+    course.isPublished = true;
+    course.author = 'Another Author';
+    course.set({
+        isPublished: true,
+        author: 'Another Author'
+    });
+    
+    const result = await course.save();
+    console.log(result);
+}
+
+// createCourse();
+// getCourses();
+updateCourse("62d18953762a4863acd365df");
+
+
+-- terminal
+❯  node .\index.js
+Connected to MongoDB...
+{
+  name: 'Angular.js Course',
+  author: 'Another Author',
+  tags: [ 'angular', 'frontend' ],
+  date: 2022-07-15T15:35:47.975Z,
+  isPublished: true,
+  _id: new ObjectId("62d18953762a4863acd365df"),
+  __v: 0
+}
+
+
