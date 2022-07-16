@@ -1,0 +1,116 @@
+Exercise 1
+    Import JSON file with bunch of JSON objects into a database
+    - mongoimport: This command to import data into a MongoDB
+                   we need to supply various flags:
+                   - --db databaseName: This flag we specify the name of the database
+                   - --collection collectionName: The Collection name we want to import this data
+                   - --file sourceFile.json: The file where is the JSON objects 
+                   - --jsonArray: We need this flag because the data in the sourceFile.json is represented 
+                                  using an Array
+    
+    MongoDB-Database Tools:
+     - The MongoDB Database Tools are a collection of command-line utilities for working with a MongoDB deployment.   
+       The Database Tools includes:
+
+       Binary Import / Export
+        mongodump: Creates a binary export of the contents of a mongod database.
+        mongorestore: Restores data from a mongodump database dump into a mongod or mongos
+        bsondump: Converts BSON dump files into JSON.
+
+       Data Import / Export
+        mongoimport: Imports content from an Extended JSON, CSV, or TSV export file.
+        mongoexport: Produces a JSON or CSV export of data stored in a mongod instance.
+
+       Diagnostic Tools
+        mongostat: Provides a quick overview of the status of a currently running mongod or mongos instance.
+        mongotop: Provides an overview of the time a mongod instance spends reading and writing data.
+
+       GridFS Tools
+        mongofiles: Supports manipulating files stored in your MongoDB instance in GridFS objects.
+     - Installation; head over => https://www.mongodb.com/try/download/database-tools
+       - Download zip file
+       - Extract and copy all filed form /bin folder to PATH 
+    
+     - Documentation => https://www.mongodb.com/docs/database-tools/
+
+    Using mongoimport:
+     - Run in console => ❯ mongoimport --db mongo-exercises --collection courses --file exercise-data.json --jsonArray
+       Outpur of console => 2022-07-15T19:28:46.919-0500    connected to: mongodb://localhost/
+                            2022-07-15T19:28:49.525-0500    7 document(s) imported successfully. 0 document(s) failed to import.
+    Info Exercise
+     - Write a program and:
+       - Get all the published backend courses
+       - Sort them by their name
+       - Pick only their name and author properties
+         Display them
+
+
+
+
+
+
+-- exercise1.js
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/mongo-exercises')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    tags: [ String ],
+    date: Date, 
+    name: String,
+    author: String,
+    isPublished: Boolean
+});
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function getCourses(){
+    return await Course.findOne()
+        .find({isPublished: true, tags: 'backend'})
+        .sort({name:1})
+        .select({name:1, author:1});
+
+}
+
+async function run() {
+    const courses = await getCourses();
+    console.log(courses);
+}
+
+run();
+
+
+
+
+
+
+-- terminal
+❯ node .\exercise1.js
+Connected to MongoDB...
+[
+  {
+    _id: new ObjectId("5a68fde3f09ad7646ddec17e"),
+    name: 'ASP.NET MVC Course',
+    author: 'Mosh'
+  },
+  {
+    _id: new ObjectId("5a68fdc3615eda645bc6bdec"),
+    name: 'Express.js Course',
+    author: 'Mosh'
+  },
+  {
+    _id: new ObjectId("5a68fdd7bee8ea64649c2777"),
+    name: 'Node.js Course',
+    author: 'Mosh'
+  },
+  {
+    _id: new ObjectId("5a68fe2142ae6a6482c4c9cb"),
+    name: 'Node.js Course by Jack',
+    author: 'Jack'
+  }
+]
