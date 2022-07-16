@@ -1,0 +1,103 @@
+Updating a Document - Update First
+    Updatin First approach:
+     - We use this approach when we aren't receive an input from the client; just we want to update the Document
+       or multiple Documents directly in the database without retrieving them first.
+     - For this we use .updateOne() or .updateMany() methods instead the fingById(). These methods takes:
+       - Query/Filter object: We define an object and pass what Documents we want according the filter
+                              e.g { _id: 1}     => To update a particular Document
+                                  {isPublished: false}
+       - Update object: We use one or more of the MongoDB update operators  => head over Updated Operators in Documentation
+                        - $currentDate: Sets the value of a field to current date
+                        - $inc: Increments/Decrements the value of the field by the specified amount
+                                e.g Incremet the likes of a post in facebook
+                        - $min: Only updates the field if the specified value is less than the existing field value
+                        - $max: Only updates the field if the specified value is greater than the existing field value
+                        - $mul: Multiplies the value of the field by the specified amount. Similar to $inc
+                        - $rename: Rename a field
+                        - $set: Sets the value of a field in a document. Using an object and the key:value pairs
+                        - $setOnInsert
+                        - $unset: Removes the specified field from a document
+        These method returns:
+         - result: The result of the update operation; but this isn't the Document object
+    
+    .updateOne(): This update the first Document that matches the filter
+    .updateMany(): This update all Documents that matche the filter
+
+    But there's another method if we want instead of get the result of the update operation; the Document object.
+    So we use:
+     - .findByIdAndUpdate(): We pass the same arguments that the previous methods and we have one optional 3rd
+                             argument:
+                             - 3rd argument: If we don't use this argument; we get the original Document before update!
+                                             If we pass:
+                                              - Object: with a property:
+                                                        - new: true
+                                             We will get the Document updated!
+     - .findOneByIdAndUpdate()
+
+
+
+
+
+
+
+
+-- index.js
+
+..
+...
+async function updateCourse(id) { 
+    const result = await Course.updateOne({_id: id},{
+        $set: {
+            author: 'Harold',
+            isPublished: false
+        }
+    });
+    console.log(result)
+}
+
+updateCourse("62d18953762a4863acd365df");
+
+-- terminal 
+❯  node .\index.js
+Connected to MongoDB...
+{
+  acknowledged: true,
+  modifiedCount: 1,
+  upsertedId: null,
+  upsertedCount: 0,
+  matchedCount: 1
+}
+
+
+
+
+
+-- index.js
+async function updateCourse(id) { 
+    const result = await Course.findByIdAndUpdate({_id: id},{
+        $set: {
+            author: 'Jostin',
+            isPublished: false
+        }
+    }, {
+        new: true
+    });
+    console.log(result)
+}
+
+
+updateCourse("62d18953762a4863acd365df");
+
+
+-- terminal
+❯  node .\index.js
+Connected to MongoDB...
+{
+  _id: new ObjectId("62d18953762a4863acd365df"),
+  name: 'Angular.js Course',
+  author: 'Jostin',
+  tags: [ 'angular', 'frontend' ],
+  isPublished: false,
+  date: 2022-07-15T15:35:47.975Z,
+  __v: 0
+}
