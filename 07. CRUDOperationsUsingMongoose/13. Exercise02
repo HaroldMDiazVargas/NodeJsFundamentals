@@ -1,0 +1,68 @@
+Exercise 2
+    - Get all the published frontend and backend courses
+    - Sort them by their price in a DESC order (most expensive to less expensive)
+    - Pick only their name and author and the price
+    - Diplay on the console 
+
+
+
+-- exercise2.js
+
+async function getCourses(){
+    return await Course.findOne()
+        .find({isPublished: true})
+        .or([ {tags: 'frontend'}, {tags: 'backend'} ])
+        .sort('-price')
+        .select('name author price');
+
+}
+
+
+-- exercise2.js
+async function getCourses(){
+    return await Course.findOne()
+        .find({isPublished: true,  tags: {$in: ['frontend', 'backend']}})
+        .sort({price: -1})
+        .select({name:1, author:1});
+}
+
+
+
+
+
+-- terminal
+
+❯ node .\exercise2.js
+Connected to MongoDB...
+[
+  {
+    _id: new ObjectId("5a68fdd7bee8ea64649c2777"),
+    name: 'Node.js Course',
+    author: 'Mosh',
+    price: 20
+  },
+  {
+    _id: new ObjectId("5a6900fff467be65019a9001"),
+    name: 'Angular Course',
+    author: 'Mosh',
+    price: 15
+  },
+  {
+    _id: new ObjectId("5a68fde3f09ad7646ddec17e"),
+    name: 'ASP.NET MVC Course',
+    author: 'Mosh',
+    price: 15
+  },
+  {
+    _id: new ObjectId("5a68fe2142ae6a6482c4c9cb"),
+    name: 'Node.js Course by Jack',
+    author: 'Jack',
+    price: 12
+  },
+  {
+    _id: new ObjectId("5a68fdc3615eda645bc6bdec"),
+    name: 'Express.js Course',
+    author: 'Mosh',
+    price: 10
+  }
+]
