@@ -25,7 +25,10 @@ Updating a Document - Query First
             - values: represent the new values 
       - Finally we call the .save() method the same way when we use it for creating a new Document
     
-
+    This approach is useful for Business Rules:
+     - When we receive an input from the client and we want to make sure that the UPDATE is a valid operation
+       e.g If one Document has a property in a certain value we can define how we change other properties
+           e.g if isPublished is true; we shoudkn't be allow to change the author
 
 -- index.js
 
