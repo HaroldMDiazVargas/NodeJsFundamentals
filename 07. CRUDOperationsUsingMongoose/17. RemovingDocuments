@@ -1,0 +1,51 @@
+Removing Documents
+    We use:
+     - deleteOne(): Delete the first one Document that match the Filter Object
+     - deleteMany(): Delete all Documents that match the Filter Object
+     These methods take:
+      - Filter/Query Object: We define an object and we define the query/filter to get the document/s we want to 
+                             delete
+                             e. { _id: id }
+     These methods return:
+      - Promise: so we can await and get the result; but this result is not the Document deleted; it s the result of
+                 delete operation:
+                  - This shows us the number of Documents deleted!
+    
+
+    We have anothers methods:
+     - findByIdAndDelete(): returns the deleted Document/s after having deleted them
+     - findOneByIdAndDelete(): returns the deleted Document after having deleted it
+
+     Remove():
+     - This is a deprecated function and has been replaced by deleteOne() and deleteMany()
+     - The same for:
+         - findByIdAndRemove()
+         - findOneByIdAndRemove()
+
+
+
+-- index.js 
+
+
+async function removeCourse(id) { 
+    // const course = await Course.deleteOne({ _id: id });
+    const course = await Course.findByIdAndRemove(id);
+    console.log(course);
+}
+
+removeCourse("62d18953762a4863acd365df");
+
+
+
+-- terminal 
+❯  node .\index.js
+Connected to MongoDB...
+{
+  _id: new ObjectId("62d18953762a4863acd365df"),
+  name: 'Angular.js Course',
+  author: 'Jostin',
+  tags: [ 'angular', 'frontend' ],
+  isPublished: false,
+  date: 2022-07-15T15:35:47.975Z,
+  __v: 0
+}
