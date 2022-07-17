@@ -1,0 +1,83 @@
+Validation
+    MongoDB doesn't care about omitted properties if we don't pass when we create a new Document.
+    In other words, all the properties defined in the Schema are OPTIONAL, so if we create a new 
+    Document to save in a Collection in our database we can:
+     - either pass a value or we don't put that property
+
+    Implement Validation
+     - There're various built-in validators, but here we'll see: Require Validator 
+
+    The Require Validator
+     - This validator consists on define a property call:
+     - required: We set this to true in the Schema!
+        e.g     name: {type: String, required: true},
+            author: {type: String, required: true},
+
+     - With this validator if we try to create a new Document without property that is 'required',
+       the time that .save() is called => we will get an exception!
+     - To deal with this exception we need to handle the rejection state of the Promise; so we 
+       put this inside a:
+     - try/catch block!
+     - This validator is ONLY meaningful in moongose; MongoDB doesn't care about these properties in the 
+       Schema; this only makes part of mongoose. At the time we try to save the Document mongoose does a 
+       validation logic!
+       
+    JoI or mongoose Validation
+     - We should use both, because these kind of validation complements each other:
+       - Joi: We use in our RESTful APIs, as the first attach to make sure that the data that the client is sending 
+              us is valid data!
+       - mongoose validation: We still need this to make sure that the data we send to the database is in a 
+                              right shape. Because is possible that client sends us a valid Document in the 
+                              body of the request; but when we create the Document Object in our HTTP Service
+                              perhaps we may forget to set a property to what we get from req.body.property. So 
+                              we can solve this making the property required and get an Error Message!
+    NoSQL vs SQL validation:
+     - In SQL we can validate our data at the time we create the tables; we can make the columns as required
+       So is different in NoSQL like MongoDB doesn't care nothing about validation; this is meaningful for mongoose
+
+
+    Trigger the validation
+     - the Document object(e.g course) has a method called: 
+       - validate: This method returns a Promise of void
+                   We have the same validation error if the Promise rejects.
+                   But this method doesn't return nothing (ideally hould return a boolean)
+                   This method can take a CALLBACK to make a way to have a boolean:
+                   - Callback: So we remove the 'await' operator and pass an arrow function:
+                               - takes an error object
+                               - we evaluate this error object and execute some logic
+    
+       
+    
+
+-- index.js 
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        author: 'Harold',
+        tags: ['angular', 'frontend'],
+        isPublished: true
+    });
+    
+    try {
+
+        // course.validate((err) => {                   => if we want to return a boolean
+        //     if(err) {}
+        // });
+
+        // await course.validate()                      => returns a void promise
+
+        // const result = await course.save();          => return the Document and save it 
+        // console.log(result);     
+    }
+
+    catch (ex) {
+        console.log(ex.message);
+    }
+}
+
+
+    
