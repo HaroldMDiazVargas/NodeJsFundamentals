@@ -1,0 +1,106 @@
+Async Validators
+    Sometimes the validation logic of our custom validators may involve:
+     - read something from the database
+     - read something from a remote HTTP Service
+    We need an Asynchronous Validator!
+
+    Convert to Async Validator:
+     - In the validate property object; we set a new propery:
+       - isAsync property: we set this to 'true'
+     - Also in the validator property where is the function to make the logic of the custom validator, we convert the function
+       to an async function and then:
+       - 'await' a function call that return a promise where is the Asynchronous Operation!
+    
+
+
+-- index.js
+       
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'network']
+    },
+    author: String,
+    tags: {
+        type: Array,
+        validate: {
+            isAsync: true,
+            validator: async function(v){
+
+                try {
+                    return await checkTags(v);
+                }
+                catch(err){
+                    console.log('Error', err.message);
+                }
+            },
+            message: 'A course should have at least one tag'
+        }
+        
+    },
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        required: function() { return this.isPublished; },
+        min: 10,
+        max: 200
+    }
+});
+
+function checkTags(v){
+        return new Promise((resolve, reject) => {
+            setTimeout( () => {
+                const result = v && v.length > 0;
+                resolve(result);
+            }, 4000);
+
+        });
+}
+
+
+const Course = mongoose.model('Course', courseSchema);
+
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        category: 'web',
+        author: 'Harold',
+        tags: [],
+        isPublished: true,
+        price: 10
+    });
+    
+    try {
+
+        const result = await course.save();
+        console.log(result);
+    }
+
+    catch (ex) {
+        console.log(ex.message);
+    }
+}
+
+
+createCourse();
+
+
+
+-- terminal
+❯ node .\index.js
+Connected to MongoDB...         // After 4 seconds the next message!
+Course validation failed: tags: A course should have at least one tag
+
+
+
