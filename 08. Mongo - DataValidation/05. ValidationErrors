@@ -1,0 +1,69 @@
+Validation Errors
+    When the .save() method doesn't executed resolved because there's a validation error we're just displaying
+    the ex(exception) object we get in catch() block
+
+    Exeption object:
+     - This object has propery called:
+       - .errors: In this propery we have a separate property for each invalid property in our DocumentObject
+                  In other words, if we want to create a new Document and there're various invalid properties 
+                  in this property we get a separate property for each kind of invalid property
+                  - .errors.property1
+                  - .errors.property2
+                  - ...
+                  We can iterate over all the properties and get more detail about each validation errors
+                  - ex.errors[field]; we will see:
+                   Validation Error objects:
+                    - ValidatorError: 'message'
+                    - Stack trace
+                    - message: 'message'
+                    - name: 'ValidorError'
+                    - properties: Object that gives us info about the validation requirements for the current property:
+                                  - validator: [Function],
+                                  - message: ''
+                                  - type: 'typeOfValidator'
+                                  - path: 'nameOfProperty'
+                                  - value: 'currentValue'
+                    - kind: 'same of type' e.g 'enum', 'user defined'
+                    - path: 'nameOfProperty'
+                    - value: 'currentValue'
+                    - reason: undefined
+                    - $isValidatorError: true
+
+                So if we want just the message for each Validation Error message we simply access to the message property
+
+
+
+-- index.js
+...
+...
+async function createCourse() {
+    const course = new Course({
+        name: 'Angular.js Course',
+        category: '-',
+        author: 'Harold',
+        tags: [],
+        isPublished: true,
+        price: 10
+    });
+    
+    try {
+        const result = await course.save();
+        console.log(result);
+    }
+
+    catch (ex) {
+        for (field in ex.errors)
+            console.log(ex.errors[field].message);
+    }
+}
+
+createCourse();
+
+
+
+-- terminal 
+
+❯ node .\index.js
+Connected to MongoDB...
+`-` is not a valid enum value for path `category`.              //message1
+A course should have at least one tag                           //message2
