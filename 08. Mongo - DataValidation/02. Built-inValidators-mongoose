@@ -1,0 +1,64 @@
+Built-in validators in mongoose
+    
+    Required Validator:
+     - We saw that we can set property called 'required' to a boolean; but we can also set to:
+       - function: This functions must return a boolean; and is used to make a property conditional required
+                   according certain criterio!
+                   Syntax:
+                   required: function() {return this.isPublished; }
+
+                   Thi function can not be replace by an arrow function, because arrow function don't have 
+                   their own 'this'; they use the 'this' value of the enclosing execution context. There's a 
+                   function somewhere in mongoose that is going to call this function and the reference 'this'
+                   will reference that function => Not the Document Object!
+    
+    Built-in Validators according the Type!
+     - String:
+        - minlength: min number of characters
+        - maxlength: max number of characters
+        - match: we can pass a regular expression e.g /pattern/
+        - enum: [validStrings] => This is used for predefined list of strings that must match, like a list!
+                                  the value must have one of these values to be valid!
+     - Number:
+       - min: number min e.g 10
+       - max: max number e.g 200
+     - Dates:
+       - min
+       - max
+
+    Validation Errors:
+     - We see that when we have the validation errors in console; we can see various validation errors 
+       together => later we will show how to get individual eror messages for these exception!
+
+
+
+-- index.js 
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'network']
+    },
+    author: String,
+    tags: [ String ],
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        required: function() { return this.isPublished; },
+        min: 10,
+        max: 200
+    }
+});
+
+const Course = mongoose.model('Course', courseSchema);
