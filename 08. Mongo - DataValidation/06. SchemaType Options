@@ -1,0 +1,65 @@
+SchemaType Options
+    When we define the type of a property in our Schema; we know there're two ways:
+     - just typing the type directly e.g author: String
+     - using the SchemaType object e.g { type: String, required: true, ...}
+
+    Useful properties in SchemaType objects:
+     - Strings: We have:
+               - enum
+               - minlength
+               - maxlength
+               - lowercase: true/false; mongoose automatically converts the value of this category property to lowercase
+                            so in the our databse Collection will be in lowercase
+               - uppercase: true/flase; mongoose automatically converts the value of this category property to uppercase
+               - trim: true/false, mongoose automatically removes paddings in our string
+     - Custom get:
+       - We pass an arrow functions and defines a custom logic for getting the value; so this is called when we 
+         are getting the value of this property in a Document stored in the database
+
+     - Custom set:
+       - We pass an arrow function and defines a custom logic for setting the value; so this is called when we 
+         are setting the value of this property in a Document at the time is being created
+    
+      These Custom get/set can be apply independent of the type!
+    
+
+-- index.js
+
+
+const courseSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'network'],
+        lowercase: true,
+        trim: true
+    },
+    author: String,
+    tags: {
+        type: Array,
+        validate: {
+            isAsync: true,
+            validator: async function(v){
+                try {
+                    return await checkTags(v);
+                }
+                catch(err){
+                    console.log('Error', err.message);
+                }
+            },
+            message: 'A course should have at least one tag'
+        }
+        
+    },
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        required: function() { return this.isPublished; },
+        min: 10,
+        max: 200,
+        get: v => Math.round(v),
+        set: v => Math.round(v)
+    }
+});
