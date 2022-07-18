@@ -1,0 +1,56 @@
+Custom Validators
+    Sometimes the built-in Validators in mongoose don't give us the kind of validation we need!
+    
+    Validate property
+     - We set validate property to an object:
+       - object: in this validate object we have:
+                - validator property: we set to a function that returns boolean; that function takes:
+                                      - v: short for value
+                                      - code block: in the body of the function we make our custom validation logic
+                - message property: we set to a custom message 
+
+    e.x Make a validation for tags proeprty that takes an Array of String:
+        - if tags is NULL => we must see the custom message
+        - if tags is empty array => we must see the custom message
+        - if tags is omitted => we must see the custom message
+                                this because automatically mongoose pass an empty array!
+
+
+
+-- index.js 
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+ .then(() => console.log('Connected to MongoDB...'))
+ .catch(err => console.error('Could not connect to MongoDB...', err));
+
+ 
+
+const courseSchema = new mongoose.Schema({
+    name: {type: String, required: true},
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'network']
+    },
+    author: String,
+    tags: {
+        type: Array,
+        validate: {
+            validator: function(v){
+                return v && v.length > 0;
+            },
+            message: 'A course should have at least one tag'
+        }
+        
+    },
+    date: { type: Date, default: Date.now}, 
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        required: function() { return this.isPublished; },
+        min: 10,
+        max: 200
+    }
+});
