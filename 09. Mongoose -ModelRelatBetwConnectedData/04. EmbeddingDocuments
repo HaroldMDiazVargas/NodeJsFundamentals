@@ -1,0 +1,106 @@
+Embedding Documents
+    In contrast with referencing Documents where we define the type of the property as ObjectId. 
+    Here we define as:
+     - property: documentSchema
+       we also can make this SubDocument required() for validation by passing SchemaType Object
+       - property : {type: documentSchema, required: true}
+       Or if we want to make just a few properties of the SubDocument required; we make this in the ModelSchema itself!
+    
+    Creating Sub/Embedded Document:
+     - Instead of passing the ObjectId when we want to create a new Document, we pass:
+       - new instance of the class for creating the Embedded Document
+       e.g  createCourse('Node Course', new Author({ name: 'Mosh' }));
+    
+    This subdocuments are like normal Documents:
+     - Most features available in Documents are also for subdocuments:
+       - Implement validation
+       - ...
+    
+    Updating Sub/Embedded Documents:
+     - We can use the two approaches:
+       - Query First: we just query the Document using .findById() and pass the Id of the Parent Document. Then to update it 
+                      we access to the SubDocument using dot notation and finally save() !
+       - Update First: we can use .updateOne() or .findOneAndUpdate method and pass the Id as a typeObject and using $set 
+                       property as second argument
+    
+    Remove Sub/Embedded Documents:
+     - We can use the $unset operator to remove:
+       - nested property(just property)
+       - the entire SubDocument as a whole
+     - So we can set this operator to an object like the $set operator; but here we set to an '' empty String!
+
+
+
+
+
+-- embedding.js
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
+const authorSchema = new mongoose.Schema({
+  name: String,
+  bio: String,
+  website: String
+});
+
+const Author = mongoose.model('Author', authorSchema);
+
+const Course = mongoose.model('Course', new mongoose.Schema({
+  name: String,
+  author: {
+    type: authorSchema,
+    required: true
+
+}
+}));
+
+async function createCourse(name, author) {
+  const course = new Course({
+    name, 
+    author
+  }); 
+  
+  const result = await course.save();
+  console.log(result);
+}
+
+async function listCourses() { 
+  const courses = await Course.find();
+  console.log(courses);
+}
+
+async function updateAuthor(courseId){
+
+
+    // const course = await Course.findById(courseId);
+    // course.author.name = 'Harold';
+    // const result = await course.save();
+   
+
+
+    // const course = await Course.findOneAndUpdate({_id: courseId}, {
+    //     $set: {
+    //         'author.name': 'Mauricio'
+    //     }
+    // } , { new:true});
+
+
+
+    const course = await Course.findOneAndUpdate({_id: courseId}, {
+        $unset: {
+            'author': ''
+        }
+    } , { new:true});
+
+
+   
+    console.log(course);
+}
+
+// createCourse('Node Course', new Author({ name: 'Mosh' }));
+
+updateAuthor('62d6ad6613f3fbc944dcce77');
