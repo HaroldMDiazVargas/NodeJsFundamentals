@@ -1,0 +1,30 @@
+Restructuring the Project
+    In our Routers Modules e.g customers.js or genres.js
+    - On top: We have the Document Object Model
+    - Middle: Route Handlers
+    - Final: Validate function with Joi
+    Keep our app maintainable:
+     - Ensure each Module is responsible for only 1 thing(SRP)
+    We see that we haves these modules inside routes/ folder, so the definition of Object Model doesn't belong here!
+
+    Abstracting:
+     - Create a models/ folder 
+       e.g customer.js, genre.js, etc
+     - In each file we move the corresponding:
+       - Document Object Model definition
+       - Function using joi for validating a new Document
+       - Load the neccesary dependencies 
+       - Finally export an object with:
+         - Class of Document Object Model
+         - Function of validating the new Document
+         e.g
+            module.exports.Customer = Customer;
+            module.exports.validate = validateCustomer;
+    
+    Loading in the Route Handler Module:
+     - We want to load using Object Destructuring to avoid write code like e.g  customer.validate in several places
+       const { Customer, validate } = require('../models/customer');
+    
+    
+
+       
