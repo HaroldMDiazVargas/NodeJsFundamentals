@@ -1,0 +1,87 @@
+Array of SubDocuments
+    To have embedded an array of SubDocuments e.g a course with mutliple authors. So we need to have the same 
+    Schema Document in a plural property naming such as 'authors'. When we define the schema of the parent Document:
+     - propertyInPlural: [childSchema]
+       authors: [authorSchema]
+    
+    Creating the Array of SubDocuments:
+     - When we call the create method we pass an array of new instances of the class SchemModel of the child Document, and 
+       we pass different properties for each child Document e.g different authors
+    
+    Adding new item to the Array of SubDocuments:
+     - To add a new item to the array we just:
+       - Get parent Document by Id
+       - Access to the SubDocuments using dot notation and like we have an array we use:
+         - push(): pass the new SubDocument to add!
+       - Finally save() because the changes are in memory but not in the database
+
+    Removing an item from the Array of SubDocuments:
+     - We get the parent Document by Id
+     - Here we can access using dot notation to a method:
+       - .id(): we can look up a Child Document by its id; so we just pass the Id of the SubDocument
+     - Once we get the corresponding SubDocument of the array, we remove it using:
+       - remove() 
+     - Finally we must save() to commit changes in database
+
+
+
+-- embedding.js
+
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
+const authorSchema = new mongoose.Schema({
+  name: String,
+  bio: String,
+  website: String
+});
+
+const Author = mongoose.model('Author', authorSchema);
+
+const Course = mongoose.model('Course', new mongoose.Schema({
+  name: String,
+  authors: {
+    type: [authorSchema],
+    required: true
+
+}
+}));
+
+async function createCourse(name, authors) {
+  const course = new Course({
+    name, 
+    authors
+  }); 
+  
+  const result = await course.save();
+  console.log(result);
+}
+
+
+
+async function addAuthor(courseId, author){
+    const course = await Course.findById(courseId);
+    course.authors.push(author);
+    await course.save();
+}
+
+async function removeAuthor(courseId, authorId){
+    const course = await Course.findById(courseId);
+    author = course.authors.id(authorId);
+    author.remove();
+    course.save();
+}
+
+
+
+createCourse('Node Course', [
+     new Author({ name: 'David' }),
+     new Author ({ name: 'Alejandro'})
+]);
+
+// removeAuthor("62d6b85bda45b86c5db6c16b", '62d6b85bda45b86c5db6c16a')
+// addAuthor("62d6b85bda45b86c5db6c16b",new Author ({ name: 'Harold'}) )
