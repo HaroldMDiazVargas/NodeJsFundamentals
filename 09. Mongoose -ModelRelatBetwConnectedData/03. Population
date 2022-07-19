@@ -1,0 +1,94 @@
+Reading a Document with reference
+    We need to query our Documents indicating the property that has the reference of the another Document. 
+    However we only will see the 'Id' but in a real world app we want to display all the properties about the 
+    referenced Document!
+
+    populate() method:
+     - With this method we can display the properties of the referenced Document
+     - this method takes:
+       - path: path of the target property e.g 'author'
+       - property/es: define in quotes the properties we want to include; maybe we have many properties so we want just 
+                      select a few      e.g 'name'
+                      - To exclude the '_id' porperty we use:
+                        '-propertyName'   e.g '-_id'
+     - mongoose knows the exactly Collection in MongoDB is going to take; because it looks the property 'author' and 
+       knows that when we define the Model Schema we pass to this property:
+       - ref: 'Collection'
+     - We can call this method many times as we have others referenced Documents. So we can populate different 
+       properties
+     - Finally if we have an invalid referenced Id necause MongoDB doesn't care about data integrity between 
+       different Collections; so we will get 'null' 
+
+
+
+-- population.js
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/playground')
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
+const Author = mongoose.model('Author', new mongoose.Schema({
+  name: String,
+  bio: String,
+  website: String
+}));
+
+const Course = mongoose.model('Course', new mongoose.Schema({
+  name: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Author'
+  }
+
+}));
+
+async function createAuthor(name, bio, website) { 
+  const author = new Author({
+    name, 
+    bio, 
+    website 
+  });
+
+  const result = await author.save();
+  console.log(result);
+}
+
+async function createCourse(name, author) {
+  const course = new Course({
+    name, 
+    author
+  }); 
+  
+  const result = await course.save();
+  console.log(result);
+}
+
+async function listCourses() { 
+  const courses = await Course
+    .find()
+    .populate('author', 'name -_id')
+    .select('name');
+  console.log(courses);
+}
+
+// createAuthor('Mosh', 'My bio', 'My Website');
+
+// createCourse('Node Course', '62d6a588a4116db1cb290885')
+
+listCourses();
+
+
+
+-- terminal 
+
+❯ node .\population.js
+Connected to MongoDB...
+[
+  {
+    _id: new ObjectId("62d6a67d2aa0aac29b39f195"),
+    name: 'Node Course',
+    author: { name: 'Mosh' }
+  }
+]
