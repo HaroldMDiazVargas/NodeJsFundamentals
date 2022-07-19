@@ -1,0 +1,56 @@
+ModelLing Relationships
+    In all the work we have done so far, we have work with:
+     - Single Self Contain Documents
+    In the real world the entities and concepts that we work with; they have some kind of association.
+
+    Related Objects:
+     - We have two approaches for working with related objects:
+       - Using References(Normalization): We should have a separate Collection for storing different Documents
+                                          e.g one Collection for authors
+                                              one Collection for courses
+                                          And to relate these Documents we can set the author property in course Document
+                                          as the id of the author in authors Collection. This is a reference!
+                                          - Always we can even have an array of references
+                                          - So we have One Document that references another Document throught the ID
+
+       - Using Embedded Documents(Denormalization): We can embed a Document of one Collection inside a Document of 
+                                                    another Collection.
+                                                    - e.g one Document and instead of set  property reference id, we set 
+                                                          the property to:
+                                                          - object: in this object we have all properties of the Document
+                                                          So we have a Document inside another Document
+
+       - Hybrid approach: In this we have a combination of both approaches. This is used when we have a Collection
+                          wich Documents have a lot of properties e.g 50 properties; so instead of embed all the 
+                          large Document and duplicate all these properties in the other Document. We just pass 
+                          two properties:
+                           - id
+                           - one or two more properties
+                           So we are:
+                            - Referencing the Document of another collection using the id 
+                            - Embedded the Document inside another Documentt
+
+    Trade-off between Query performance vs Consistency
+     - Normalization approach:
+       - We have CONSISTENCY, only 1 place we can modify the properties values because the references are attached by id
+       - We will have to run extra query for the references; so don't use this approach if we want to run 
+         our queries as fast as possible
+    
+     - Denormalization approach:
+       - We don't have CONSISTENCY, ther're various place to modify the properties and if update operation doesn't 
+         perform well, we can ended with some Documents with inconsistence data
+       - We can load with a single query various information of different Documents/Collections
+
+     - Hybrid approach:
+       - Usefult when we want to have Snapshot of our data in a certain point. 
+         e.g Snapshot of the current price of products in an order
+       - Quickly for query with a single operation because we are reading both Documents information at same time
+       - We dont't store all the properties of the large Document in the other Document
+
+
+    
+    SQL vs NoSQL
+     - In SQL we do have the concept of Relationship between tables/databases. But here we don't have the concept 
+       of Relationship!. In NoSQL there's no association between different Documents in a database.
+       e.g we can set a reference with an invalid reference and MongoDB doesn't care about it!
+
