@@ -1,0 +1,202 @@
+Project - Build the Rentals API
+    API to manage the rentals:
+     - Create new rental
+       - POST /api/rental
+     - Get the list of rentals
+       - GET /api/rentals
+
+  
+  ModelSchema:
+   - To create the a new model schame for Rental; we need to define all the properties
+     we want to have:
+     - customer: We could have the embedded Document about the customer, but if we do that we will end 
+                 with a lot of properties about the customer that we don't really want. So a better approach
+                 is to define a new Schema with just:
+                 - name
+                 - isGold
+                 - phone
+                 These are the properties that we really want when we see the Rental of a customer
+     - movie: The same principle applies here, we create a new Schema with the next properties:
+              - title
+              - dailyRentalRate: We need this for later computes the total amount charge
+     - dateOut: to know the date of rental
+     - dateReturned
+     - rentalFee: the total charge
+  
+  JoiSchema:
+   - So in conclusion we're not embedded Documents, but in our JoiSchema we want that the client pass only:
+     - customerId
+     - movieId
+    With this information is enough to see:
+     - If the Documents of these Ids passed exist! and extract some information used for the requests!
+  
+  - The reason to avoid embedded Documents is because these Documents schema have many properties as REQUIRED!
+    so even if we don't want to save in the Rental Document these properties we will HAVE TO save all them 
+    because are required defined in the corresponding Schemas!
+  
+  POST Request:
+   - Before creating a new Document of Rental we need to check:
+     - If the request body passed from client is valid
+     - If the Customer passed from client as customerId exists
+     - If the Movie passed from client as movieId exists
+     - If the Movie is in stock, for this we need to check the property 'numberInStock' != 0
+   - Once is created the Document Rental
+     - We need to save() in our database
+   - Then we need to decrement the 'numberInStock' and save(update) the Document Movie in our database
+   - So these operations must be ATOMIC:
+     - Both must be succesful or must rejected!! Because if this doesn't happen we will end in INCONSISTENCY!
+
+  
+  Transactions:
+   - For these ATOMIC operations in our database we use => Transactions!
+
+
+
+
+
+
+
+-- models/rental.js
+
+// const { genreSchema } = require('./genre');
+const { movieSchema } = require('./movie');
+const { customerSchema } = require('./customer');
+const mongoose = require('mongoose');
+const Joi = require('joi');
+
+const Rental = mongoose.model('Rental', new mongoose.Schema({
+
+    customer: {
+        type: new mongoose.Schema({
+            name: {
+                type: String, 
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            },
+            isGold: {
+                type: Boolean,
+                default: false
+            },
+            phone: {
+                type: String,
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            }
+        }),
+        required: true
+    },
+    
+    movie: {
+        type: new mongoose.Schema({
+            title: {
+                type: String,
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            },
+            dailyRentalRate: {
+                type: Number,
+                required: true,
+                min: 0,
+                max: 255
+            }
+
+        }),
+        required: true
+    },
+    dateOut: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    dateReturned: {
+        type: Date,
+    },
+    rentalFee: {
+        type: Number,
+        min: 0
+    }
+
+
+}));
+
+
+function validateRental(rental){
+    const schema = Joi.object({
+        customerId: Joi.string().required(),
+        movieId: Joi.string().required()
+    });
+    return schema.validate(rental);
+}
+
+module.exports.Rental = Rental;
+module.exports.validate = validateRental;
+
+
+
+
+-- routes/rentals.js
+const { Rental, validate } = require('../models/rental');
+const { Customer } = require('../models/customer');
+const { Movie } = require('../models/movie');
+const express = require('express');
+const router = express.Router();
+
+
+router.get('/', async (req,res) => {
+    const rentals = await Rental.find().sort('-dateOut');
+    res.send(rentals);
+    
+});
+
+router.get('/:id', async (req, res) => {
+    const rental = await Rental.findById(req.params.id);
+    if (!rental) return res.status(404).send('The rental with the given ID was not found')
+
+    res.send(rental);
+
+});
+router.post('/', async (req,res) => {
+
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    const customer = await Customer.findById(req.body.customerId);
+    if (!customer) return res.status(404).send('The customer with the given ID was not found');
+
+    const movie = await Movie.findById(req.body.movieId);
+    if (!movie) return res.status(404).send('The movie with the given ID was not found');
+
+
+    if (movie.numbersInStock === 0) return res.status(400).send('Movie not in stock');
+    // res.send(genre);
+
+
+    let rental = new Rental ({
+        customer: {
+            _id: customer._id,
+            name: customer.name,
+            isGold: customer.isGold,
+            phone: customer.phone
+        },
+
+        movie: {
+            _id: movie._id,
+            title: movie.title,
+            // genre: movie.genre,
+            // numberInStock: movie.numberInStock,
+            dailyRentalRate: movie.dailyRentalRate
+
+        }
+    });
+
+        rental = await rental.save();
+        
+        movie.numberInStock--;
+        movie.save();
+
+        res.send(rental);
+        
+});
