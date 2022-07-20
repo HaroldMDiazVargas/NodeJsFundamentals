@@ -1,0 +1,135 @@
+Transactions
+    In some relational databases like SQLserver or MySQL there's the concept:
+     - Transaction: Means that a group of operations should be performance as a Unit; if one of these
+                    can be completed all the operations must be Rollback in the initial state.
+
+    Two Phase Commit tecnhique:
+     - We don't have Transaction in MongoDB, but we have this tecnhique
+     - This is beyond advanced topic:
+       - Head over: mongodb 2 phase commit (docs.mongodb)
+       - See how to use this tecnhique using a real world example
+    
+
+    Fawn Library: => Read in github page Documentation
+     - This library gives us the concept of transaction, but internally implements this transaction 
+       using the 2 Phase Commit
+     - Install
+            npm i fawn
+    
+    Load and Init fawn:
+     - Load
+            require('fawn') => this returns a class Fawn
+     - Calling initially method
+            Fawn.init(mongooseObject)
+    
+    Using fawn:
+     - We will create:
+       - task Object: this is like a transaction, we add one or more operations that will threated as a unit
+                      new Fawns.Task()
+                        .operation1
+                        .operation2
+                      Operations: 
+                        - .save() operation: we use this for save the Document to a Collection in our database:
+                                            this takes:
+                                            - Collection Name: the exact collection name in our database, this is case sensitive
+                                            - Document Name: the Document we want to store
+                                            e.g save('rentals', rental)
+
+                        - .update() operation: We use this for update Document/s in a Collection, this takes:
+                                              - Collection Name
+                                              - QueryObject: to determinates the Document/s to be updated
+                                              - UpdateObject: we can use the update operators!
+                        - .remove() operation: We use this for delete Document/s in a collection
+                        - .run(): After define all the operation we call this otherwise none of these operations
+                                   will be performed
+     - We need to wrap all in a Try/Catch block if something fails
+       We throw a '500' Error Status => Means Internal Server Error
+     - Internally in our database we will have a new Collection with a weird name. This collection is created
+       by fawn to compute the 2 Phase Commit adding a new Document as a transaction and then remove the 
+       document when finishes!
+
+    Default properties:
+     - _id: The id of a new Document created by the ModelSchema is always a unique idenfifier
+     - Default values: Properties which schema is required and have defualt values need to have the 
+                       default values
+     These properties are defined in our mongooseSchema not by MongoDB because in MongoDB we dont' have these 
+     default values. So these properties are set before we save() the Document to the database!
+
+
+
+-- routes/rental.js
+
+const { Rental, validate } = require('../models/rental');
+const { Customer } = require('../models/customer');
+const { Movie } = require('../models/movie');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const Fawn = require('fawn');
+
+Fawn.init(mongoose);
+router.get('/', async (req,res) => {
+    const rentals = await Rental.find().sort('-dateOut');
+    res.send(rentals);
+    
+});
+
+router.get('/:id', async (req, res) => {
+    const rental = await Rental.findById(req.params.id);
+    if (!rental) return res.status(404).send('The rental with the given ID was not found')
+
+    res.send(rental);
+
+});
+router.post('/', async (req,res) => {
+
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    const customer = await Customer.findById(req.body.customerId);
+    if (!customer) return res.status(404).send('The customer with the given ID was not found');
+
+    const movie = await Movie.findById(req.body.movieId);
+    if (!movie) return res.status(404).send('The movie with the given ID was not found');
+
+
+    if (movie.numbersInStock === 0) return res.status(400).send('Movie not in stock');
+    // res.send(genre);
+
+
+    let rental = new Rental ({
+        customer: {
+            _id: customer._id,
+            name: customer.name,
+            isGold: customer.isGold,
+            phone: customer.phone
+        },
+
+        movie: {
+            _id: movie._id,
+            title: movie.title,
+            // genre: movie.genre,
+            // numberInStock: movie.numberInStock,
+            dailyRentalRate: movie.dailyRentalRate
+
+        }
+    });
+
+    try{
+        new Fawn.task()
+        .save('rentals', rental)
+        .update('movies', { _id: movie._id }, {
+            $inc: {numberInStock: -1}
+        })
+        .run();
+
+        res.send(rental);
+    }
+    catch(ex){
+        res.status(500).send('Something failed');
+    }
+        
+});
+
+    
+    
