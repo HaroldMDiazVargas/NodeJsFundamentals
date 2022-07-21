@@ -1,0 +1,27 @@
+MongoDB in production
+    If we want to use MongoDB in production we need to set up MongoDB Replica Sets
+
+    Replica Sets:
+     - Consist on several MongoDB servers and they have never seen production database that consist just of
+       one server.
+     - In each Replica Set there's only one Primary Server and all others are Secondary Servers
+       But we can make changes only on the Primary Server:
+       - If we update any Document on the Primary Server, the update is automatically propagated to all 
+         Secondary servers. In other words is Replicated from Primary to => Secondary
+     - If Primary Server fails then Secondary Servers will elect new Primary Server and one of the Secondary
+       Server will become Primary
+    
+    Write Operation:
+     - If we want to perform write operation we must fo it on the Primary Server
+    
+    Read Operations:
+     - If we wanto to read data from the database e.g aggregation requests, find query...
+       we can read from any of the servers: Either from Primary or from Secondary
+    
+
+    Cluster:
+     - We have our Cluster in MongoDB Atlas, a cluster consists of:
+       - Different servers: Primary, Secondary, Secondary, ...
+                            These 3 servers combined is a Replica Set!
+
+ 
