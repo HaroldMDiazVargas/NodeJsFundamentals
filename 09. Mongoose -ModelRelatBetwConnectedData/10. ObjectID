@@ -1,0 +1,54 @@
+Object ID
+    The unique identifier _id set by MongoDB is 24 characters
+    Every 2 characters represent 1 byte => So we have 12 bytes to unique identifier in MongoDB:
+
+    12 Bytes:
+     - 4 bytes: timestamp: This is the time this Document was created
+                           So we don't have to create a separate property to save this information in our Document
+                           And if we want to sort our Documents by the creation time we can just sort by _id
+     - 3 bytes: machine identifier: The pc/laptops/...
+     - 2 bytes: process identifier: We can generate two Documents in same machine but in different processos
+     - 3 bytes: counter: this will be different for all Documents even if we create at the same time in same machine
+                         at same time and in the same process!
+    
+    Two Documents with same _id:
+     - We know that 1 byte has 8 bits, so we can represent 2^8 = 256 numbers
+       So we can stored in 3 bytes, 2^24 = 16M numbers
+       So if at the same time, machine, process we generate more than 16 M Documents, the counter will overflow
+       and we will end in same _id for two Documents
+    
+    MongoDB Driver:
+     - This _id is not generate by MongoDB itself, is generate by MongoDB Driver!
+     - MongoDB Driver talks to MongoDB; so we don't have to wait for MongoDB to generate the _id
+       that's why apps built on top of MongoDB are high scalable:
+       - We can have several instances of MongoDB and we don't have to talk to a central place to 
+         get a unique identifier. The Driver itself can generate these unique identifiers
+     - Mongoose is an abstraction over MongoDB Driver, for this reason when we crate a new Document 
+       Mongoose talks to MongoDB Driver to generate a new _id
+    
+    Our own ObjectId
+     - We can create our own _ids:
+       - create a new mongooseType of ObjectId:
+         new mongoose.Types.ObjectId()
+     - The ObjectId has a method:
+      - .getTimestamp()
+     - Also the mongoose.Types.ObjectId has a static method to validate an _id:
+      - .isValid('id')
+
+
+
+-- index.js
+
+const mongoose = require('mongoose');
+
+const id = new mongoose.Types.ObjectId();
+console.log(id.getTimestamp());
+console.log(mongoose.Types.ObjectId.isValid('1234'));
+    
+
+
+-- terminal 
+
+❯ node .\index.js
+2022-07-21T03:11:48.000Z
+false
