@@ -1,0 +1,12 @@
+Project - A better implementation
+    - We move the ObjectId validation to index.js because we may want to reuse it
+        Joi.objectId = require('joi-objectid')(Joi);
+    - We use .objectId() in the validation method for movies request body
+    - We change the 'let' to 'const' when we define the Document for:
+      - customer
+      - genre
+      - mvoie
+      because we know that we don't have to reset the Document to res.send to the client 
+      when it .save() because the Document has already all Default and _id properties 
+      given by mongoose that talks to MongoDB Driver!
+      So we don't need to reset it; we just await for .save()
