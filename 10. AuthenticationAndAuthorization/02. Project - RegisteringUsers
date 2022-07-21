@@ -1,0 +1,98 @@
+Project - Creating User Model
+    We want to create a new Endpoint for creating the Register of a new User
+    Register => POST api/users
+
+    User ModelSchema
+     - name
+     - email => unique: true
+     - password
+     Here we also define the validate function to validate the request body sent by the client. In JOI we also have 
+      .email() to validate that is a valid email!
+
+    Users router:
+     - We only will have POST Request RouterHandler
+     - We evaluate the request body sent by the client 
+     - We evaluate that the user is not registered, so we query by the 'email' 
+     - We create the new User Document and save() to the database
+    
+
+    Returned Info to the client:
+     - For now we returned all the user Document but this is wrong, we shouldn't return the password, _v, _id...
+
+
+
+-- models/user.js
+const mongoose = require('mongoose');
+const Joi = require('joi');
+
+
+const User = mongoose.model('User', new mongoose.Schema({
+    name: {
+        type: String,
+        minlength: 5,
+        maxlength: 50,
+        required: true
+    },
+
+    email: {
+        type: String,
+        minlength: 5,
+        maxlength: 255,
+        unique: true,
+        required: true
+    },
+
+    password: {
+        type: String,
+        minlength: 5,
+        maxlength: 255,
+        required: true
+    }
+   
+}));
+
+
+function validateUser(user){
+    const schema = Joi.object({
+        name: Joi.string().min(5).max(50).required(),
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(5).max(255).required()
+    });
+    return schema.validate(user);
+}
+
+module.exports.User = User;
+module.exports.validate = validateUser;
+
+
+
+
+-- routes/user.js
+const { User, validate } = require('../models/user');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+router.post('/', async (req,res) => {
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    let user = await User.findOne({ email: req.body.email  });
+    if (user) return res.status(400).send('User already registered');
+
+    user = new User ({
+
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+
+    });
+        await user.save();
+
+        res.send(user);
+        
+});
+
+module.exports = router;
+    
