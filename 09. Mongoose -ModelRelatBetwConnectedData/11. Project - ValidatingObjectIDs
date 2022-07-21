@@ -1,0 +1,70 @@
+Vidly Project - Validating Object Ids
+    When we try to POST a new Rental Document:
+     - If we mistake the 'id' we will get an error and with a non-zero exit code
+       the error is Cast to ObjectId failed
+    In this situation we should get:
+     - 404 Code Status Error: Bad Request, because the Server can't Fullfil this request
+    
+
+    Ways to validate Object Id:
+     - One way is using the => mongoose.Types.ObjectId.isValid('id')
+       this static method using and IF and res.send 404 Error
+       But this logic is not a logic in the database, it should be a logic computed in 
+       the 'validate' function of the request.body information sent by the client
+     - Other way is to customize the 'validate' function where is joi schema to validate the 
+       req.body info sent by the client, but this would be very complex and we don't want to 
+       make a complex validation everytime we want to validate an 'ObjectId'
+     - Using a npm package
+    
+
+    joi-objectid
+     - This is package to validate a ObjectId
+     - Install:
+       - run => npm i joi-objectid
+     - Loading:
+       - require('joi-objectid') => this returns a Function, so we pass a referenced to the Joi module!
+       - require('joi-objectid')(Joi) => we set this to a method of the Joi class
+       - Joi.objectId = require('joi-objectid')(Joi)
+     - Using:
+       - We just use Joi.objectId() instead of .string()
+
+
+
+
+-- rental.js
+const { movieSchema } = require('./movie');
+const { customerSchema } = require('./customer');
+const mongoose = require('mongoose');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+
+...
+...
+...
+
+function validateRental(rental){
+    const schema = Joi.object({
+        customerId: Joi.objectId().required(),
+        movieId: Joi.objectId().required()
+    });
+    return schema.validate(rental);
+}
+
+module.exports.Rental = Rental;
+module.exports.validate = validateRental;
+
+
+
+-- POST request with invalid ID
+"customerId" with value "1234" fails to match the valid mongo id pattern
+
+
+-- terminal => Nothing happens
+❯ nodemon .\index.js
+[nodemon] 2.0.19
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node .\index.js`
+Listening on port 3000...
+Connected to MongoDB...
