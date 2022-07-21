@@ -1,0 +1,55 @@
+Project - Authenticating Users
+    Now we need a new endpoints  /api/logins
+    So we create a new Router => logging.js or auth.js
+
+    auth router:
+     - We evaluate that the request body is valid: valid email and a string password with Joi
+     - We evaluate that the email sent by the user exists, if not we sent a 400 Status Code(Bad Request).
+       - We don't send 404(Not Found) because we don't tell the user exactly what's wrong
+         just that something email or password are invalids
+     - We authenticate the password using bcrypt object that has a method:
+       - .compare(): Compare a plain text password with the hash password
+                     this method takes:
+                     - plain text password
+                     - hash password
+                     So this method rehash the plain text password using the Salt stored in the hash password saved
+                     and return true if is valid!
+     - We evaluate that the password is valid; if not we send 400 Status Code Error with the same message of 
+       invalid email or password
+     - For now we send only a (true) to client is all goes well!
+
+
+-- routes/auth.js
+
+const bcrypt = require('bcrypt');
+const _ = require('lodash');
+const { User } = require('../models/user');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+router.post('/', async (req,res) => {
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    let user = await User.findOne({ email: req.body.email  });
+    if (!user) return res.status(400).send('Invalid email or password');
+
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) return res.status(400).send('Invalid email or password');
+
+    res.send(true);
+        
+});
+
+
+function validate(req){
+    const schema = Joi.object({
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(5).max(255).required()
+    });
+    return schema.validate(req);
+}
+
+module.exports = router;
