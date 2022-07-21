@@ -1,0 +1,32 @@
+Introduction
+
+    Authentication:
+     - Is the process of identifing if the user is who they claim they are:
+     - That's when the user logging, so the user sends:
+       - username
+       - password
+       to the server and the server authenticates us
+    
+    Authorization
+     - Is determinating if the user has the right permission to perform the given operation
+       e.g Only logged users can perform certain operations like modify data
+     - A user that is not logges is an Anonymous User
+     - A user can have various roles:
+       - Admin Users
+       - ...
+       This is a 2nd Level of Authorization
+    
+
+    New Endpoints:
+     - Register: POST /api/users. For each user we want to have:
+                                  - name
+                                  - email => unique property to true in our Schema!
+                                  - password
+     - Login: We're not:
+              - Creating a new resource
+              - Updating a new resource
+              - Removing a new resource
+              So to implement this we refer to this as => Request of Command in RESTful terms
+              Because is an operation that doesn't have CRUD semantic
+              In this case:
+              POST /api/logins
