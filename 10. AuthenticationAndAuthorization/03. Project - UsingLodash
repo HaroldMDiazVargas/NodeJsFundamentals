@@ -1,0 +1,56 @@
+Using Lodash
+    To returned information to the client we have various ways:
+     - In the res.send() we can pass an object and send the properties we want to display to user once 
+       their have registered! So we can hide the password
+     - Lodash Utility Library
+
+    
+    Lodash library
+     - This is an useful library for working with javascript objects, strings, numbers, arrays,...
+     - This is the optimize version of 'underscore'
+     - install =>    npm i lodash
+     - load =>       const _ = require('lodash');
+
+    Using Lodash library:
+     - The '_' object has the next utility method:
+       - .pick(): this method returns a new object with only the properties we want to pick
+                  this method takes:
+                  - object: just pass an object
+                  - array: Array of properties that we want to pick of the object passed in 1st argument
+
+
+    Password Complexity using joi-password-complexity
+     - This is an npm package to configurate an object and determinates the password complexity of our app:
+       - min: minimum number of characters
+       - max: maximum number of characters
+       - lowerCase: how many lowecase
+       - upperCase: how many uppercase
+       - numeric: how many numbers
+       - symbol: how many symbols
+       - requirementCount
+
+
+-- routes/users.js
+
+const _ = require('lodash');
+const { User, validate } = require('../models/user');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+router.post('/', async (req,res) => {
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    let user = await User.findOne({ email: req.body.email  });
+    if (user) return res.status(400).send('User already registered');
+
+    user = new User (_.pick(req.body, ['name', 'email', 'password']));
+    await user.save();
+
+    res.send(_.pick( user, ['_id', 'name', 'email']));
+        
+});
+
+module.exports = router;
