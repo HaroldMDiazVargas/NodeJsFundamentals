@@ -24,4 +24,31 @@ MongoDB in production
        - Different servers: Primary, Secondary, Secondary, ...
                             These 3 servers combined is a Replica Set!
 
- 
+
+    Convert to a ReplicaSet => http://thecodebarbarian.com/introducing-run-rs-zero-config-mongodb-runner.html
+        We have run MongoDB locally so our server is Cluster Standalone and is not Replica Set. 
+        We use a package to to run a MongoDB replica set locally for development and clear the database each 
+        time:
+        - run-rs package
+          npm install run-rs -g
+        - Now we will have a replica set running MongoDB locally. 
+        - Run rs.status() to verify the replica set is running. Then, we can execute a transaction from :
+          - the MongoDB shell - mongosh
+          - using 'mongod' package in node.js
+          - using 'mongoose' package in node.js
+
+    Transaction in mongoose:
+     - Where we want to use the transaction:
+       const session = await mongoose.startSession();
+       session.startTransaction();
+       try {
+            ...
+            ...
+            await session.commitTransaction();
+            session.endSession();
+       }
+       catch (ex){
+        await session.abortTransaction();
+        session.endSession();
+        console.log(ex);
+       }
