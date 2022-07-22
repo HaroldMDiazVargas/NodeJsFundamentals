@@ -1,0 +1,65 @@
+Project - Authorization Middleware
+    Only Authorization users can modify data in this app!
+     - genres API: Should only be called by Authenticated users
+
+    Logic:
+     - In Route Handler that modifies data (POST, PUT, ...)
+     - We expect a token in header with the name 'x-auth-token'
+     - If this doesn't exist:
+       - response a Status Code 401: Means that the user doesn't have authentication credentials to access this resource
+    
+    Logic in Middleware Function:
+     - We don't want to repeat this logic at the begining of every Route Handler that modifies data.
+     - We put this logic in a Middleware Function and then we apply that Function in Route Handlers that need to modify data.
+    
+
+    Middleware Function:
+     - Create a middleware/ folder
+     - Create a middleware/auth.js file
+       - We define a function that takes:
+         - req
+         - res
+         - next: Pass control to the next Middleware Function in the Request Processing Pipeline
+         In this function we put the Logic of Authorization:
+          - Evaluate that request Header 'x-auth-token' exist(if the token exists)
+          - If we don't have a JWT, we send 401 Error Status
+          - Evaluate the token is a valid JWT:
+            - jwt.verify(): this method takes:
+                            - token: The token
+                            - privateKey: The private key for decoding the token
+                            This method returns:
+                            - Payload: if the JWT is valid!
+                            - Throw Exception: if the JWT is invalid!
+                            So we need to wrap in a try/catch block
+                            - in catch we send 400 Status Code: client sent us invalid token(wrong data)
+         - If it's a valid JWT, we put the Payload returned by verify() in the request:
+           - req.user = decoded;
+             So in our Route Handlers we can access to this Payload using just req.user! (the properties are what we defined when creating JWT)  
+     - Finally pass Control to the next Middleware Function in the Request Processing Pipeline:
+        - next()   
+        Because we either terminate:
+        - req - res cycling
+        - or pass the control using next()            
+
+
+
+
+-- middleware/auth.js
+
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+module.exports = function auth(req, res, next){
+    const token = req.header('x-auth-token');
+    if (!token) return res.status(401).send('Access denied. No token provided.');
+
+    try{
+        const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
+        req.user = decoded;
+        next();
+    }
+    catch(ex){
+        res.status(400).send('Invalid token');
+    }
+
+}
