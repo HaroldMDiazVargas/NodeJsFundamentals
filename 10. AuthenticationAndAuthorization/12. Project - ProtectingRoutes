@@ -1,0 +1,45 @@
+Project - Protecting Routes
+
+    To apply the Middleware Functions:
+     - We can add to index.js like app.use()
+    But this Middleware Function defined of that way will be executed before EVERY Route Handler!
+    We don't want to Protect all API endpoints:
+     - Some API endpoints should be public e.g registerUser, loging, getListGenres, ...
+    
+    Applying Middleware Function Selectively:
+     - We go to the particular Route Handler
+     - The router.post/get/delete/put..() takes:
+       - Route/path
+       - Middleware(optionally): This Middleware Function passed here will be executed just before the next Middleware Function,
+                                 which in this case in the RouteHanderFunction which is exactly a Middleware!
+       - RouteHanderFunction
+     - So just import the Middleware Function on top and pass as the second argument!
+    
+
+
+
+-- rotes/genres.js
+...
+
+router.post('/', auth, async (req,res) => {
+    
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    
+    const genre = new Genre ({
+        name: req.body.name
+    });
+
+    try{
+        await genre.save();
+        res.send(genre);
+        }
+
+    catch(ex){
+        console.log(ex.message);
+
+    }
+
+});
+    
