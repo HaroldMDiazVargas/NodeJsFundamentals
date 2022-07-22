@@ -1,0 +1,40 @@
+Authentication using JSON Web Tokens
+    We need to return a JSON Web Token instead of a boolean.
+
+    JWT:
+     - Is basically a long string that identifies an user e.g metaphora is like our driver license
+     
+    Authentication
+     - So the user logs in
+     - on the server we generate a JWT and we give it to the Client
+     - And tell to the Client that:
+       - Next time the Client come back and uses one of our Endpoints => Show the identifier JWT  
+     - We store on the Client the JWT(long string), to allow sending in future calls to the Server
+     - Remember that Client can be: 
+       - Web app: Angular/React we can use Local Storage(in every browser)
+       - Mobile app: Similar option that web app depending on what platform we use
+    
+    JWT:
+     - On jwt.io => Debugger to working with a real example of JWT
+     - We have two sections;
+       - Encoded: Long string that represents a JSON object but it is encoded, if we decoded we get a JSON object
+                  This string has three parts:
+                  - Header of JWT: We have two properties:
+                                   - algorithmic: Determinates the algorithmic used for encoded the token
+                                   - type: the type of the token e.g JWT
+                  - Payload: The properties of the JSON object that include few public properties about the user. 
+                             e.g
+                             - sub: this is the id
+                             - name
+                             - admin
+                             This allow us:
+                             - Avoid to do extra querys to check the name of the user by find(id)
+                             - Avoid to do extra querys to check if the user is admin or not
+                  - Digital Signarute: This is created based on the content of the JWT along with the Secret(Privary Key)
+                                       This Secret is only available on the Server, so a hacker can never modify 
+                                       the Payload of a JWT because if the JWT changes, the Digital Signature will be 
+                                       invalid! Because the content of JWT changed, so we need a new Digital Signature but 
+                                       to generate this new Digital Signarute is needed the Secret that is on the server!
+       - Decoded: This represents the same Encoded and the three parts but Decoded!
+    
+    
