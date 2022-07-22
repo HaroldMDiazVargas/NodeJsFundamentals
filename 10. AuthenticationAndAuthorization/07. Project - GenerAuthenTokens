@@ -1,0 +1,96 @@
+Project - Generating Authentication Tokens
+    We generate a JWT using a package
+
+    jsonwebtoken package:
+     - Install npm i jsonwebtoken
+    
+    Load:
+     - require('jsonwebtoken')
+    
+    This object has a method:
+     - .sign(): Used to create a new token, this method takes:
+                - Payload: which can be an object literal, string or buffer  representing valid JSON. So we can 
+                           pass in an object the properties we want to include in the Payload
+                           e.g {_id: user._id}
+                - secret/privateKey: This can be a string, buffer or object specify the algorithm(see documentation)    
+                                     The default is : HS256 (HMAC SHA256)
+                                     so we can pass just 'jwtPrivateKey'
+    
+
+
+-- routes/auth.js
+
+const jwt = require('jau');
+const Joi = require('joi');
+const bcrypt = require('bcrypt');
+const _ = require('lodash');
+const { User } = require('../models/user');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+router.post('/', async (req,res) => {
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    let user = await User.findOne({ email: req.body.email  });
+    if (!user) return res.status(400).send('Invalid email or password');
+
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) return res.status(400).send('Invalid email or password');
+
+    const token = jwt.sign({ _id: user._id}, 'jwtPrivateKey');
+    res.send(token);
+        
+});
+
+
+function validate(req){
+    const schema = Joi.object({
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(5).max(255).required()
+    });
+    return schema.validate(req);
+}
+
+module.exports = router;
+
+
+
+
+
+-- POST /api/auth
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+eyJfaWQiOiI2MmQ5ZjE4ZDQzNzk0YzRhZjNmYWViY2IiLCJpYXQiOjE2NTg0NTcyNzV9.
+DjLO5OnwGyMCXdNu8I-mdFRlDmrGcl4AqzK7ctsdyk4
+
+
+
+
+
+
+// jwt.io using Decoder
+
+HEADER:ALGORITHM & TOKEN TYPE
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+
+
+PAYLOAD:DATA
+{
+  "_id": "62d9f18d43794c4af3faebcb",
+  "iat": 1658457275
+}
+
+
+VERIFY SIGNATURE
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  
+your-256-bit-secret
+
+) secret base64 encoded
