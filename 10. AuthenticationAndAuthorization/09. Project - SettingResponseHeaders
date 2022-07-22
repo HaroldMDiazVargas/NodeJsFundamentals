@@ -1,0 +1,83 @@
+Project - Setting Response Headers
+    There're various type of Register/Logging approach used by Client apps:
+     - We can register and then can happen:
+       - Check email
+       - Go to a link
+       - Logging
+     - We can register and at the same time the register ends, we logg in automatically
+       - This approach can be very common and useful in Client apps locally used only from the people who works there
+         e.g Vidly app where only workers of the Rental Video Store are who interact with the app
+
+    
+    Register and logged automatically:
+     - We are register users in users.js router using POST request. And we are returning properties 
+       in the response to the Client such as id, name and email.
+     - We can add JWT but this is not a property of the user. So a better approach is to response JWT in an 
+       HTTP Headers:
+       - So we have Headers in our Requests and also in our Response Objects
+       For this we use:
+       - res.header(): This method takes:
+                        - HeaderName: A convention name for any custom headers is to prefix 'x-'
+                                      e-g 'x-auth-token'
+                        - value: Value to send in the header, in this case the JWT
+    
+    Utility of Response JWT in Header:
+     - In our Client app when we register a user we can:
+       - Read this Header
+       - Store JWT on the client
+       - Next time we make an API call => we send the JWT to the server!
+    
+    So remember we don't Send JWT in the Response to the client in this case because:
+     - In the body of this response we sent the User Properties, so we don't want to combine these properties 
+       that are just for the user with the JWT.
+       But in the auth.js router, like we're not Respond anything but the JWT we can just use res.send(token)
+
+
+-- users.js
+
+const config = require('config');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const _ = require('lodash');
+const { User, validate } = require('../models/user');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+router.post('/', async (req,res) => {
+    const { error } = validate(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    let user = await User.findOne({ email: req.body.email  });
+    if (user) return res.status(400).send('User already registered');
+
+    user = new User (_.pick(req.body, ['name', 'email', 'password']));
+    const salt = await bcrypt.genSalt(10);  
+    user.password = await bcrypt.hash(user.password, salt);
+    await user.save();
+
+    const token = jwt.sign({ _id: user._id}, config.get('jwtPrivateKey'));
+    res.header('x-auth-token', token).send(_.pick( user, ['_id', 'name', 'email']));
+        
+});
+
+module.exports = router;
+
+
+-- POST in /api/users 
+Response is:
+Body:
+{
+    "_id": "62da2018d8ee4b763e06096a",
+    "name": "Diana",
+    "email": "dcossa@un.net"
+}
+Headers:
+    KEY 
+    x-auth-token 
+
+    VALUE 
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+    eyJfaWQiOiI2MmRhMjAxOGQ4ZWU0Yjc2M2UwNjA5NmEiLCJpYXQiOjE2NTg0NjIyMzN9.
+    awQqOiolQGnuoXS4YAZjo1qRMhlASWBkavlsaJ0HCWM
