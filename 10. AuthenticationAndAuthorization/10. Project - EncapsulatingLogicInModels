@@ -1,0 +1,77 @@
+Project - Encapsulating Logic In Models
+    In our current implementation we have repeated the creation of the JWT in two places:
+     - users.js router
+     - auth.js router
+    So if we then in future decide to change the properties in the Payload:
+     - Add role
+     - Add name
+     - ...
+    We will have to look for all places we create the JWT!
+
+    Encapsulate JWT logic in Single place:
+     - One way is used a function and reuse it in different modules just importing it
+     - In OOP we have a Principle called => Information Expert Principle
+       This means that an object that has enough Information and is an Expert in a given area, that object should be responsible 
+       for making decision and performing tasks. e.g real example is chef
+     - So in our case is the user object that should be responsible for generating the JWT, because the Payload of the JWT 
+       depends on a few properties of the user object. 
+    
+     - JWT as method in user object:
+      - To have a method in our user object e.g user.generateToken(), we need to modify our user ModelSchem
+      - In the userSchema we have a property:
+        - .methods: This property returns an object, so we can add additional key:value pairs and add a new Method in User object:
+                   - .key = value
+                     e.g .functionName = function(paramsOptional){}
+                     This function can never be an arrow function, because like we need to reference this object we use 
+                     'this' keyword, and arrow funcitions don't have their own 'this', the arrow function 'this' references 
+                     the calling function
+      
+-- models/user.js
+
+const config = require('config');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const Joi = require('joi');
+
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        minlength: 5,
+        maxlength: 50,
+        required: true
+    },
+
+    email: {
+        type: String,
+        minlength: 5,
+        maxlength: 255,
+        unique: true,
+        required: true
+    },
+
+    password: {
+        type: String,
+        minlength: 5,
+        maxlength: 255,
+        required: true
+    }
+   
+});
+
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({ _id: this._id}, config.get('jwtPrivateKey'));
+    return token;
+
+}
+
+const User = mongoose.model('User', userSchema );
+
+
+
+
+-- routers/users.js or auth.js
+...
+...
+const token = user.generateAuthToken();
+...
+...
