@@ -1,0 +1,11 @@
+Project - Loggin Out a User
+    We don't need a separate Route for loggin out users. Because we're not storing the token anywhere on the server so we don't need a separate
+    Route Handler to delete the token! The token is stored on the Client!
+
+    Loggin out feature needs to be implemented on the Client, not on the server:
+     - On the Client-app when user logs out we simply delete the token from the Client!
+     - Storing the token on the server is a very bad practice, because these tokens are like keys that give Clients access to protected 
+       API endpoints. If a hacker can get access to our database and see all the tokens for Authenticate user, they don't even need to 
+       know the passwords, simply get token and send to server request to protected APIs
+     - If maybe we store tokens in Server => Hash the tokens!
+     - Whenever we are sending tokens from the Client to the Server, we must ensure use HTTPS => data encrypted between Client-Server
